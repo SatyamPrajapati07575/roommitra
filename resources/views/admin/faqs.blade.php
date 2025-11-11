@@ -1,152 +1,109 @@
 @extends('layouts.admin')
-@section('title', 'FAQ Management')
-@push('styles')
-    <style>
-        /* Toggle Switch Style */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked+.slider {
-            background-color: #28a745;
-        }
-
-        input:checked+.slider:before {
-            transform: translateX(26px);
-        }
-    </style>
-@endpush
+@section('title', 'Manage FAQs')
 
 @section('content')
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
-                <h3 class="card-title">FAQ Management</h3>
-            </div>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#addFaqModal">➕ Add New FAQ</button>
+    @include('admin.partials.page-header', [
+        'title' => 'Manage FAQs',
+        'icon' => 'bx bx-help-circle'
+    ])
+
+    <div class="container-fluid">
+        {{-- Add FAQ Button --}}
+        <div class="mb-3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addFaqModal">
+                <i class='bx bx-plus'></i> Add New FAQ
+            </button>
         </div>
-        <div class="card-body table-responsive">
-            <!-- Filters -->
-            <div class="row mb-3">
+
+        {{-- Filters --}}
+        <div class="card p-3 mb-4">
+            <div class="row g-2">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="filter-search" name="search"
-                        value="{{ request('search') }}" placeholder="Search by question or tag...">
+                    <input type="text" class="form-control" placeholder="Search by question">
                 </div>
-
-                <div class="col-md-3">
-                    <select class="form-control select2bs4" id="filter-category" name="category">
-                        <option value="">Filter by Category</option>
-                        <option value="booking" {{ request('category') == 'booking' ? 'selected' : '' }}>Booking</option>
-                        <option value="payment" {{ request('category') == 'payment' ? 'selected' : '' }}>Payment</option>
-                        <option value="general" {{ request('category') == 'general' ? 'selected' : '' }}>General</option>
-                        <option value="technical" {{ request('category') == 'technical' ? 'selected' : '' }}>Technical
-                        </option>
-                    </select>
-                </div>
-
                 <div class="col-md-2">
-                    <select class="form-control select2bs4" id="filter-status" name="status">
-                        <option value="">Status</option>
-                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <select class="form-control">
+                        <option value="">All Categories</option>
+                        <option>Booking</option>
+                        <option>Payment</option>
+                        <option>General</option>
+                        <option>Technical</option>
                     </select>
                 </div>
-
-                <!-- Clear Button -->
-                <div class="col-md-3">
-                    <a href="{{ route('admin.faqs.index') }}" class="btn btn-outline-secondary w-100">🔄 Clear Filters</a>
+                <div class="col-md-2">
+                    <select class="form-control">
+                        <option value="">All Status</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-primary w-100"><i class='bx bx-search'></i></button>
                 </div>
             </div>
+        </div>
 
-
-            <!-- Table -->
-            <table class="table table-hover align-middle" id="faq-table">
-                <thead class="table-light">
-                    <tr>
-                        <th>ID</th>
-                        <th>❓ Question</th>
-                        <th>📂 Category</th>
-                        <th>📌 Status</th>
-                        <th>📅 Created</th>
-                        <th>⚙️ Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($faqs as $faq)
-                        <tr>
-                            <td>#{{ $faq->id }}</td>
-                            <td>{{ Str::limit($faq->question, 60) }}</td>
-                            <td>{{ ucfirst($faq->category ?? '-') }}</td>
-                            <td>
-                                <label class="switch">
-                                    <input type="checkbox" class="faq-toggle" data-id="{{ $faq->id }}"
-                                        {{ $faq->is_active ? 'checked' : '' }}>
-                                    <span class="slider round"></span>
-                                </label>
-                            </td>
-                            <td>{{ $faq->created_at->format('d M Y') }}</td>
-                            <td class="d-flex gap-2 flex-wrap justify-content-between ">
-                                <button class="btn btn-sm btn-outline-info view-faq-btn"
-                                    data-url="{{ route('admin.faqs.show', $faq->id) }}">
-                                    👁️ View
-                                </button>
-                                <button class="btn btn-sm btn-outline-primary edit-faq-btn"
-                                    data-url="{{ route('admin.faqs.update', $faq->id) }}" data-id="{{ $faq->id }}">
-                                    ✏️ Edit
-                                </button>
-
-                                <button class="btn btn-sm btn-outline-danger delete-faq-btn" data-id="{{ $faq->id }}"
-                                    data-url="{{ route('admin.faqs.destroy', $faq->id) }}">
-                                    🗑️ Delete
-                                </button>
-
-                            </td>
+        {{-- FAQs Table --}}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center table-bordered">
+                    <thead class="thead-light">
+                        <tr class="bg-light text-dark">
+                            <th>ID</th>
+                            <th>Question</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No FAQs found.</td>
-                        </tr>
-                    @endforelse
-
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">{{ $faqs->links('pagination::bootstrap-5') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($faqs ?? [] as $faq)
+                            <tr>
+                                <td>#{{ $faq->id }}</td>
+                                <td class="text-left">{{ Str::limit($faq->question, 50) }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ ucfirst($faq->category ?? '-') }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ $faq->is_active ? 'success' : 'secondary' }}">
+                                        <i class='bx {{ $faq->is_active ? "bx-check" : "bx-x" }}'></i>
+                                        {{ $faq->is_active ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td>{{ $faq->created_at->format('d M, Y') }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info view-faq-btn"
+                                            data-id="{{ $faq->id }}" title="View">
+                                        <i class='bx bx-show'></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary edit-faq-btn"
+                                            data-id="{{ $faq->id }}" title="Edit">
+                                        <i class='bx bx-edit'></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-faq-btn" 
+                                            data-id="{{ $faq->id }}" title="Delete">
+                                        <i class='bx bx-trash'></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class='bx bx-help-circle' style="font-size: 3rem;"></i>
+                                    <p class="mt-2">No FAQs found</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            @if(isset($faqs) && $faqs->hasPages())
+                <div class="p-3">
+                    {{ $faqs->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
         </div>
     </div>
 
@@ -155,8 +112,8 @@
         <div class="modal-dialog modal-lg">
             <form class="modal-content" id="addFaqForm" method="POST">
                 @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addFaqLabel">➕ Add New FAQ</h5>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addFaqLabel"><i class='bx bx-plus'></i> Add New FAQ</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

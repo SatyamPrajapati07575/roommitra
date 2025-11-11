@@ -1,185 +1,267 @@
 @extends('layouts.owner')
-@section('title', 'Dashboard')
+@section('title', 'Owner Dashboard')
 
 @section('content')
-    <div class="row g-4 mb-4">
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center p-3">
-                <h6>Total Rooms</h6>
-                @if ($rooms->isEmpty())
-                    <h3>0</h3>
-                    <small>No rooms found</small>
-                @else
-                    <h3>{{ $rooms->count() }}</h3>
-                    <small>You have {{ $rooms->count() }} active rooms</small>
-                @endif
-
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center p-3">
-                <h6>Total Bookings</h6>
-                <h3>0</h3>
-                <small>0 bookings received</small>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center p-3">
-                <h6>Total Earnings</h6>
-                <h3>₹85,000</h3>
-                <small>This month</small>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card shadow-sm text-center p-3">
-                <h6>Pending Complaints</h6>
-                <h3>3</h3>
-                <small>Unresolved complaints</small>
-            </div>
-        </div>
-    </div>
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>📊 Bookings Overview</h5>
-            <select class="form-select w-auto" id="bookingRangeSelector">
-                <option value="7">Last 7 days</option>
-                <option value="30">Last 30 days</option>
-            </select>
-        </div>
-        <div class="card-body">
-
-            <!-- Chart Canvas -->
-            <canvas id="bookingsChart" height="120"></canvas>
-
-            <!-- Booking Table -->
-            <div class="table-responsive mt-4">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Booking ID</th>
-                            <th>Room</th>
-                            <th>User</th>
-                            <th>Check-in / out</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#BK1012</td>
-                            <td>Studio Apartment A</td>
-                            <td>Ankit Joshi</td>
-                            <td>12 Apr – 15 Apr</td>
-                            <td><span class="badge bg-success">Confirmed</span></td>
-                        </tr>
-                        <!-- more rows -->
-                    </tbody>
-                </table>
+    {{-- Page Header --}}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0"><i class='bx bxs-dashboard'></i> Owner Dashboard</h1>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>🏨 Latest Rooms Added</h5>
+    <section class="content">
+        <div class="container-fluid">
+            {{-- Room Stats --}}
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>{{ $total_rooms }}</h3>
+                            <p>Total Rooms</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bxs-home'></i>
+                        </div>
+                        <a href="{{ route('owner.rooms.index') }}" class="small-box-footer">
+                            View All <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>{{ $available_rooms }}</h3>
+                            <p>Available Rooms</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-check-circle'></i>
+                        </div>
+                        <a href="{{ route('owner.rooms.index') }}" class="small-box-footer">
+                            Manage <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>{{ $pending_rooms }}</h3>
+                            <p>Pending Approval</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-time'></i>
+                        </div>
+                        <a href="{{ route('owner.rooms.index') }}" class="small-box-footer">
+                            Check Status <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>{{ $booked_rooms }}</h3>
+                            <p>Booked Rooms</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-calendar'></i>
+                        </div>
+                        <a href="{{ route('owner.rooms.index') }}" class="small-box-footer">
+                            Details <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Booking Stats --}}
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                            <h3>{{ $total_bookings }}</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-calendar-check'></i>
+                        </div>
+                        <a href="{{ route('owner.bookings.index') }}" class="small-box-footer">
+                            View All <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>{{ $confirmed_bookings }}</h3>
+                            <p>Confirmed</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-check-double'></i>
+                        </div>
+                        <a href="{{ route('owner.bookings.index') }}" class="small-box-footer">
+                            Manage <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>₹{{ number_format($this_month_earnings) }}</h3>
+                            <p>This Month Earnings</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-wallet'></i>
+                        </div>
+                        <a href="{{ route('owner.payments.index') }}" class="small-box-footer">
+                            View Payments <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="small-box bg-secondary">
+                        <div class="inner">
+                            <h3>₹{{ number_format($total_earnings) }}</h3>
+                            <p>Total Earnings</p>
+                        </div>
+                        <div class="icon">
+                            <i class='bx bx-money'></i>
+                        </div>
+                        <a href="{{ route('owner.payments.index') }}" class="small-box-footer">
+                            Details <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{-- Quick Actions --}}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class='bx bx-cog'></i> Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <a href="{{ route('owner.rooms.create') }}" class="btn btn-success btn-block">
+                                        <i class='bx bx-plus-circle'></i> Add New Room
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="{{ route('owner.rooms.index') }}" class="btn btn-info btn-block">
+                                        <i class='bx bx-building'></i> Manage Rooms
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="{{ route('owner.bookings.index') }}" class="btn btn-warning btn-block">
+                                        <i class='bx bx-calendar'></i> View Bookings
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="{{ route('owner.payments.index') }}" class="btn btn-primary btn-block">
+                                        <i class='bx bx-wallet'></i> View Payments
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Recent Activity --}}
+            <div class="row">
+                {{-- Recent Rooms --}}
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class='bx bx-home'></i> Recent Rooms</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            @if($recent_rooms && $recent_rooms->count() > 0)
+                            <ul class="list-group list-group-flush">
+                                @foreach($recent_rooms as $room)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ $room->room_title }}</strong><br>
+                                        <small class="text-muted">
+                                            <i class='bx bx-money'></i> ₹{{ number_format($room->room_price) }}/month
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-{{ 
+                                        $room->status === 'available' ? 'success' : 
+                                        ($room->status === 'pending' ? 'warning' : 
+                                        ($room->status === 'booked' ? 'info' : 'secondary'))
+                                    }}">
+                                        {{ ucfirst($room->status) }}
+                                    </span>
+                                </li>
+                                @endforeach
+                            </ul>
+                            @else
+                            <p class="text-center text-muted p-4">
+                                <i class='bx bx-info-circle'></i> No rooms yet. <a href="{{ route('owner.rooms.create') }}">Add your first room!</a>
+                            </p>
+                            @endif
+                        </div>
+                        @if($recent_rooms && $recent_rooms->count() > 0)
+                        <div class="card-footer">
+                            <a href="{{ route('owner.rooms.index') }}" class="btn btn-sm btn-primary">
+                                <i class='bx bx-right-arrow-alt'></i> View All Rooms
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Recent Bookings --}}
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class='bx bx-calendar-check'></i> Recent Bookings</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            @if($recent_bookings && $recent_bookings->count() > 0)
+                            <ul class="list-group list-group-flush">
+                                @foreach($recent_bookings as $booking)
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ $booking->room ? $booking->room->room_title : 'N/A' }}</strong><br>
+                                            <small class="text-muted">
+                                                <i class='bx bx-user'></i> {{ $booking->user ? $booking->user->full_name : 'N/A' }}
+                                            </small><br>
+                                            <small class="text-muted">
+                                                <i class='bx bx-calendar'></i> {{ \Carbon\Carbon::parse($booking->check_in_date)->format('d M') }} - {{ \Carbon\Carbon::parse($booking->check_out_date)->format('d M, Y') }}
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-{{ 
+                                            $booking->status === 'confirmed' ? 'success' : 
+                                            ($booking->status === 'pending' ? 'warning' : 
+                                            ($booking->status === 'cancelled' ? 'danger' : 'info'))
+                                        }}">
+                                            {{ ucfirst($booking->status) }}
+                                        </span>
+                                    </div>
+                                </li>
+                                @endforeach
+                            </ul>
+                            @else
+                            <p class="text-center text-muted p-4">
+                                <i class='bx bx-info-circle'></i> No bookings yet.
+                            </p>
+                            @endif
+                        </div>
+                        @if($recent_bookings && $recent_bookings->count() > 0)
+                        <div class="card-footer">
+                            <a href="{{ route('owner.bookings.index') }}" class="btn btn-sm btn-primary">
+                                <i class='bx bx-right-arrow-alt'></i> View All Bookings
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Single Room AC – ₹4,500
-                    <span class="badge bg-info">Available</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Double Room – ₹6,000
-                    <span class="badge bg-warning">Booked</span>
-                </li>
-                <!-- more -->
-            </ul>
-        </div>
-    </div>
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>💬 Recent Complaints / Messages</h5>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    <strong>“Room AC not working”</strong><br>
-                    <small>by Rakesh (User)</small> – <a href="#">View</a>
-                </li>
-                <!-- more -->
-            </ul>
-        </div>
-    </div>
-    <div class="d-flex flex-wrap justify-content-between gap-2 my-4">
-        <a href="{{ route('owner.rooms.create') }}" class="btn btn-primary">➕ Add New Room</a>
-        <a href="{{ route('owner.bookings.index') }}" class="btn btn-outline-dark">📁 View All Bookings</a>
-        <a href="/earnings" class="btn btn-outline-success">💰 Check Earnings</a>
-        <a href="/profile" class="btn btn-outline-secondary">⚙️ Update Profile</a>
-    </div>
+    </section>
 @endsection
-@push('scripts')
-    <!-- Include Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-        const ctx = document.getElementById('bookingsChart').getContext('2d');
-
-        const generateDummyData = (days) => {
-            const labels = [];
-            const data = [];
-            for (let i = days; i >= 1; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                labels.push(date.toLocaleDateString('en-IN', {
-                    day: 'numeric',
-                    month: 'short'
-                }));
-                data.push(Math.floor(Math.random() * 10 + 1)); // random bookings count
-            }
-            return {
-                labels,
-                data
-            };
-        };
-
-        let currentDays = 7;
-        let {
-            labels,
-            data
-        } = generateDummyData(currentDays);
-
-        let bookingsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Bookings',
-                    data: data,
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Handle dropdown change
-        document.getElementById('bookingRangeSelector').addEventListener('change', function() {
-            const days = parseInt(this.value);
-            const newData = generateDummyData(days);
-            bookingsChart.data.labels = newData.labels;
-            bookingsChart.data.datasets[0].data = newData.data;
-            bookingsChart.update();
-        });
-    </script>
-@endpush

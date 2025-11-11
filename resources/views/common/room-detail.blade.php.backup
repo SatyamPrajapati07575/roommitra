@@ -1,0 +1,703 @@
+@extends('layouts.modern')
+@section('title', $room->room_title . ' - RoomMitra')
+@section('meta_description', 'View details of ' . $room->room_title . ' in ' . $room->city . '. ₹' . number_format($room->room_price) . '/month. Verified accommodation with all amenities.')
+
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/home.css') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<style>
+    .room-hero {
+        position: relative;
+        height: 70vh;
+        min-height: 500px;
+        max-height: 700px;
+        overflow: hidden;
+        border-radius: 0 0 2rem 2rem;
+    }
+    
+    .swiper-hero {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .swiper-hero .swiper-slide {
+        position: relative;
+    }
+    
+    .swiper-hero .swiper-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .hero-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+        padding: 3rem 2rem 2rem;
+        z-index: 10;
+    }
+    
+    .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        color: white;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .hero-meta {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.125rem;
+    }
+    
+    .hero-badges {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 2rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .hero-badge.verified {
+        background: rgba(16, 185, 129, 0.3);
+        border-color: rgba(16, 185, 129, 0.5);
+    }
+    
+    .swiper-pagination-bullet {
+        background: white;
+        opacity: 0.5;
+    }
+    
+    .swiper-pagination-bullet-active {
+        opacity: 1;
+        background: white;
+    }
+    
+    .room-detail-main {
+        padding: 3rem 0;
+        background: #f8fafc;
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .detail-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #f1f5f9;
+    }
+    
+    .card-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .card-icon i {
+        font-size: 1.75rem;
+        color: white;
+    }
+    
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .spec-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        color: white;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .spec-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+    
+    .spec-box i {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    
+    .spec-box h4 {
+        font-size: 0.875rem;
+        margin: 0 0 0.5rem 0;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .spec-box p {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .amenities-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+    
+    .amenity-chip {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 1rem;
+        border: 2px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+    
+    .amenity-chip:hover {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        transform: translateX(5px);
+    }
+    
+    .amenity-chip i {
+        font-size: 1.5rem;
+        color: #667eea;
+        transition: color 0.3s ease;
+    }
+    
+    .amenity-chip:hover i {
+        color: white;
+    }
+    
+    .amenity-chip span {
+        font-weight: 600;
+        font-size: 0.9375rem;
+    }
+    
+    .description-text {
+        font-size: 1.0625rem;
+        line-height: 1.8;
+        color: #475569;
+    }
+    
+    .sidebar-sticky {
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .price-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        border: 3px solid transparent;
+        background-image: linear-gradient(white, white), 
+                          linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-origin: border-box;
+        background-clip: padding-box, border-box;
+    }
+    
+    .price-banner {
+        text-align: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .price-label {
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .price-value {
+        font-size: 3rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+    }
+    
+    .price-period {
+        font-size: 1.125rem;
+        color: rgba(255,255,255,0.9);
+        margin-top: 0.5rem;
+    }
+    
+    .price-features {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .price-feature {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 0.75rem;
+    }
+    
+    .price-feature strong {
+        color: #1e293b;
+        font-weight: 600;
+    }
+    
+    .price-feature span {
+        color: #667eea;
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+    
+    .cta-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 1rem;
+        font-weight: 700;
+        font-size: 1.125rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+    
+    .owner-card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        margin-top: 1.5rem;
+    }
+    
+    .owner-header {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .owner-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 auto 1rem;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .owner-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+    }
+    
+    .owner-verified {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #10b981;
+        font-weight: 600;
+    }
+    
+    @media (max-width: 991px) {
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .sidebar-sticky {
+            position: relative;
+            top: 0;
+        }
+        
+        .hero-content h1 {
+            font-size: 1.75rem;
+        }
+        
+        .room-hero {
+            height: 50vh;
+            min-height: 400px;
+        }
+    }
+</style>
+@endpush
+
+@section('content')
+
+{{-- Hero Section with Image Slider --}}
+<div class="room-hero">
+    @if($room->images && $room->images->count() > 0)
+    <div class="swiper swiper-hero">
+        <div class="swiper-wrapper">
+            @foreach($room->images as $image)
+            <div class="swiper-slide">
+                <img src="{{ asset($image->image_url) }}" alt="{{ $room->room_title }}">
+            </div>
+            @endforeach
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    @endif
+    
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <h1 data-aos="fade-up">{{ $room->room_title }}</h1>
+            <div class="hero-meta" data-aos="fade-up" data-aos-delay="100">
+                <div class="hero-location">
+                    <i class='bx bx-map'></i>
+                    <span>{{ ucwords($room->locality) }}, {{ ucwords($room->city) }}</span>
+                </div>
+                <div class="hero-badges">
+                    @if($room->is_verified)
+                    <span class="hero-badge verified">
+                        <i class='bx bx-check-shield'></i> Verified
+                    </span>
+                    @endif
+                    <span class="hero-badge">
+                        <i class='bx bx-check-circle'></i> Available
+                    </span>
+                    <span class="hero-badge">
+                        <i class='bx bx-{{ $room->room_capacity === 1 ? "user" : "group" }}'></i>
+                        {{ $room->room_capacity === 1 ? 'Single' : $room->room_capacity . ' Sharing' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+        {{-- Main Content Grid --}}
+        <div class="main-content-grid">
+            
+            {{-- Left Column --}}
+            <div class="content-left">
+                
+                {{-- Image Gallery --}}
+                @if($room->images && $room->images->count() > 0)
+                <div class="detail-card" data-aos="fade-up">
+                    <div class="detail-card-header">
+                        <i class='bx bx-images'></i>
+                        <h2>Room Photos ({{ $room->images->count() }})</h2>
+                    </div>
+                    <div class="image-gallery-main">
+                        @foreach($room->images as $image)
+                        <div class="gallery-image" onclick="openImageModal('{{ asset($image->image_url) }}')">
+                            <img src="{{ asset($image->image_url) }}" alt="Room Image {{ $loop->iteration }}" loading="lazy">
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                
+                {{-- Description --}}
+                @if($room->room_description)
+                <div class="detail-card" data-aos="fade-up">
+                    <div class="detail-card-header">
+                        <i class='bx bx-info-circle'></i>
+                        <h2>About This Room</h2>
+                    </div>
+                    <p style="line-height: 1.8; color: var(--gray-700); font-size: 1.0625rem;">
+                        {{ $room->room_description }}
+                    </p>
+                </div>
+                @endif
+                
+                {{-- Room Specifications --}}
+                <div class="detail-card" data-aos="fade-up">
+                    <div class="detail-card-header">
+                        <i class='bx bx-detail'></i>
+                        <h2>Room Specifications</h2>
+                    </div>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class='bx bx-bed'></i></div>
+                            <div class="spec-info">
+                                <h4>Total Beds</h4>
+                                <p>{{ $room->total_beds }}</p>
+                            </div>
+                        </div>
+                        @if($room->room_size)
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class='bx bx-area'></i></div>
+                            <div class="spec-info">
+                                <h4>Room Size</h4>
+                                <p>{{ $room->room_size }} sq.ft</p>
+                            </div>
+                        </div>
+                        @endif
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class='bx bx-user'></i></div>
+                            <div class="spec-info">
+                                <h4>Capacity</h4>
+                                <p>{{ $room->room_capacity }} {{ $room->room_capacity > 1 ? 'People' : 'Person' }}</p>
+                            </div>
+                        </div>
+                        @if($room->floor)
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class='bx bx-building'></i></div>
+                            <div class="spec-info">
+                                <h4>Floor</h4>
+                                <p>{{ $room->floor }}{{ $room->floor == 1 ? 'st' : ($room->floor == 2 ? 'nd' : ($room->floor == 3 ? 'rd' : 'th')) }}</p>
+                            </div>
+                        </div>
+                        @endif
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class='bx bx-food-menu'></i></div>
+                            <div class="spec-info">
+                                <h4>Kitchen</h4>
+                                <p>{{ ucfirst($room->kitchen_type) }}</p>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon"><i class='bx bx-bath'></i></div>
+                            <div class="spec-info">
+                                <h4>Bathroom</h4>
+                                <p>{{ ucfirst($room->bathroom_type) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- Amenities --}}
+                @if($room->amenities && $room->amenities->count() > 0)
+                <div class="detail-card" data-aos="fade-up">
+                    <div class="detail-card-header">
+                        <i class='bx bx-star'></i>
+                        <h2>Amenities & Facilities</h2>
+                    </div>
+                    <div class="amenities-grid">
+                        @if($room->ac)
+                        <div class="amenity-item-detail">
+                            <i class='bx bx-wind'></i>
+                            <span>Air Conditioning</span>
+                        </div>
+                        @endif
+                        @if($room->lift)
+                        <div class="amenity-item-detail">
+                            <i class='bx bx-up-arrow-circle'></i>
+                            <span>Lift/Elevator</span>
+                        </div>
+                        @endif
+                        @if($room->parking)
+                        <div class="amenity-item-detail">
+                            <i class='bx bx-car'></i>
+                            <span>Parking</span>
+                        </div>
+                        @endif
+                        @foreach($room->amenities as $amenity)
+                        <div class="amenity-item-detail">
+                            <i class='bx bx-check-circle'></i>
+                            <span>{{ $amenity->amenity_name }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                
+                {{-- Location --}}
+                <div class="detail-card" data-aos="fade-up">
+                    <div class="detail-card-header">
+                        <i class='bx bx-map'></i>
+                        <h2>Location</h2>
+                    </div>
+                    <div class="location-content">
+                        <div class="location-item">
+                            <i class='bx bx-map-pin'></i>
+                            <div>
+                                <h4>Address</h4>
+                                <p>{{ $room->address_line1 }}@if($room->address_line2), {{ $room->address_line2 }}@endif<br>{{ ucwords($room->locality) }}, {{ ucwords($room->city) }}<br>{{ ucwords($room->state) }} - {{ $room->pincode }}</p>
+                            </div>
+                        </div>
+                        @if($room->nearby_landmarks)
+                        <div class="location-item">
+                            <i class='bx bx-landmark'></i>
+                            <div>
+                                <h4>Nearby Landmarks</h4>
+                                <p>{{ $room->nearby_landmarks }}</p>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                
+            </div>
+            
+            {{-- Right Sidebar --}}
+            <div class="sidebar-sticky">
+                <div class="price-card" data-aos="fade-left">
+                    <div class="price-display">
+                        <span class="price-amount">₹{{ number_format($room->room_price) }}</span>
+                        <span class="price-period">/month</span>
+                    </div>
+                    <div class="price-details">
+                        <div class="price-detail-item">
+                            <strong>Security Deposit</strong>
+                            <span>₹{{ number_format($room->security_deposit) }}</span>
+                        </div>
+                        <div class="price-detail-item">
+                            <strong>Minimum Stay</strong>
+                            <span>{{ $room->min_stay_months }} {{ $room->min_stay_months > 1 ? 'months' : 'month' }}</span>
+                        </div>
+                    </div>
+                    <div class="contact-buttons">
+                        @auth
+                        <a href="tel:{{ $room->owner->phone ?? '+91-XXXXXXXXXX' }}" class="btn-contact btn-contact-primary">
+                            <i class='bx bx-phone'></i>
+                            <span>Contact Owner</span>
+                        </a>
+                        @else
+                        <a href="{{ route('login') }}" class="btn-contact btn-contact-primary">
+                            <i class='bx bx-log-in'></i>
+                            <span>Login to Contact</span>
+                        </a>
+                        @endauth
+                    </div>
+                </div>
+                @if($room->owner)
+                <div class="owner-card" data-aos="fade-left">
+                    <h4 class="owner-title">Property Owner</h4>
+                    <div class="owner-info">
+                        <div class="owner-avatar">{{ strtoupper(substr($room->owner->name ?? 'O', 0, 1)) }}</div>
+                        <div class="owner-details">
+                            <h4>{{ $room->owner->name ?? 'Owner' }}</h4>
+                            <p><i class='bx bx-shield-check'></i> KYC Verified</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Similar Rooms --}}
+@if($similarRooms && $similarRooms->count() > 0)
+<section class="similar-rooms-section">
+    <div class="container-modern">
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-badge">More Options</span>
+            <h2 class="section-title-modern">Similar Rooms in {{ ucwords($room->city) }}</h2>
+        </div>
+        <div class="row g-4">
+            @foreach($similarRooms as $similarRoom)
+            <div class="col-lg-4 col-md-6" data-aos="fade-up">
+                @include('components.room-card', ['room' => $similarRoom])
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<div id="imageModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; justify-content: center; align-items: center;" onclick="closeImageModal()">
+    <span style="position: absolute; top: 20px; right: 40px; color: white; font-size: 40px; cursor: pointer;">&times;</span>
+    <img id="modalImage" style="max-width: 90%; max-height: 90%; object-fit: contain;">
+</div>
+
+@endsection
+
+@push('scripts')
+<script>
+function openImageModal(url) {
+    document.getElementById('modalImage').src = url;
+    document.getElementById('imageModal').style.display = 'flex';
+}
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+document.addEventListener('keydown', (e) => e.key === 'Escape' && closeImageModal());
+</script>
+@endpush

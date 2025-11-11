@@ -1,0 +1,237 @@
+/* RoomMitra Brand Theme Colors - v1.0 */
+
+:root {
+    /* Primary Brand Colors - Purple-Blue Gradient Theme */
+    --brand-primary: #667eea;
+    --brand-primary-dark: #5568d3;
+    --brand-primary-light: #8b9cf6;
+    --brand-secondary: #764ba2;
+    --brand-secondary-dark: #6a3f8f;
+    --brand-secondary-light: #9867c5;
+    
+    /* Gradient Combinations */
+    --brand-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --brand-gradient-hover: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+    --brand-gradient-soft: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    
+    /* Success Colors */
+    --success-color: #10b981;
+    --success-light: #d1fae5;
+    --success-dark: #065f46;
+    
+    /* Error Colors */
+    --error-color: #ef4444;
+    --error-light: #fee2e2;
+    --error-dark: #991b1b;
+    
+    /* Warning Colors */
+    --warning-color: #f59e0b;
+    --warning-light: #fef3c7;
+    --warning-dark: #b45309;
+    
+    /* Info Colors */
+    --info-color: #3b82f6;
+    --info-light: #dbeafe;
+    --info-dark: #1e3a8a;
+    
+    /* Neutral Colors */
+    --neutral-50: #f8fafc;
+    --neutral-100: #f1f5f9;
+    --neutral-200: #e2e8f0;
+    --neutral-300: #cbd5e1;
+    --neutral-400: #94a3b8;
+    --neutral-500: #64748b;
+    --neutral-600: #475569;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+    
+    /* Text Colors */
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    
+    /* Background Colors */
+    --bg-white: #ffffff;
+    --bg-light: #f8fafc;
+    --bg-gray: #f1f5f9;
+    
+    /* Border & Shadow */
+    --border-color: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
+    --shadow-brand: 0 10px 40px rgba(102, 126, 234, 0.15);
+    
+    /* Radius */
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-xl: 2rem;
+    --radius-full: 9999px;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* Brand Utility Classes */
+.brand-bg-gradient {
+    background: var(--brand-gradient);
+}
+
+.brand-bg-primary {
+    background-color: var(--brand-primary);
+}
+
+.brand-text-primary {
+    color: var(--brand-primary);
+}
+
+.brand-text-gradient {
+    background: var(--brand-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.brand-border {
+    border: 2px solid var(--brand-primary);
+}
+
+.brand-shadow {
+    box-shadow: var(--shadow-brand);
+}
+
+/* Brand Buttons */
+.btn-brand-primary {
+    background: var(--brand-gradient);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition-base);
+    cursor: pointer;
+}
+
+.btn-brand-primary:hover {
+    background: var(--brand-gradient-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-brand);
+}
+
+.btn-brand-outline {
+    background: transparent;
+    color: var(--brand-primary);
+    border: 2px solid var(--brand-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition-base);
+}
+
+.btn-brand-outline:hover {
+    background: var(--brand-primary);
+    color: white;
+}
+
+/* Brand Cards */
+.card-brand {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+    transition: var(--transition-base);
+}
+
+.card-brand:hover {
+    box-shadow: var(--shadow-brand);
+    transform: translateY(-4px);
+}
+
+.card-brand-gradient {
+    background: var(--brand-gradient);
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-brand);
+}
+
+/* Brand Badges */
+.badge-brand {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--brand-gradient-soft);
+    color: var(--brand-primary);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.badge-brand-solid {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--brand-gradient);
+    color: white;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Status Badges */
+.badge-success {
+    background: var(--success-light);
+    color: var(--success-dark);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.badge-error {
+    background: var(--error-light);
+    color: var(--error-dark);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.badge-warning {
+    background: var(--warning-light);
+    color: var(--warning-dark);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Brand Animations */
+@keyframes brandPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes brandSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-brand-pulse {
+    animation: brandPulse 2s ease-in-out infinite;
+}
+
+.animate-brand-slide-up {
+    animation: brandSlideUp 0.5s ease-out;
+}

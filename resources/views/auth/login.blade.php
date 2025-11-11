@@ -1,145 +1,152 @@
-@extends('layouts.app')
+@extends('layouts.modern')
 
-@section('title', 'Login')
+@section('title', 'Login - RoomMitra')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/landing-page.css') }}">
-    <style>
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #6366f1;
-        }
-
-        .form-floating label {
-            color: #6c757d;
-        }
-
-        .bg-success-light {
-            background: #d1e7dd;
-        }
-
-        .btn-google {
-            border: 1px solid #ccc;
-            background-color: white;
-            color: #444;
-        }
-
-        .btn-google:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+<link rel="stylesheet" href="{{ asset('css/auth.css') }}?v={{ config('app.asset_version', '1.0.0') }}">
 @endpush
 
 @section('content')
 
-    <section class="text-center py-5" style="margin: 80px 0 80px 0;">
-        <div class="container">
-            <h1 class="display-5 fw-bold  heading">Login Now</h1>
-
-        </div>
-
-        <div class="container ">
-            <div class="row justify-content-center ">
-
-                <div class="row">
-
-                    <div class="col-md-6"
-                        style="background: url({{ asset('img/register.svg') }}) center center/contain no-repeat;"data-aos="fade-right"
-                        data-aos-duration="1000">
-
-
+<section class="auth-section">
+    <div class="container-modern">
+        <div class="auth-card" data-aos="fade-up">
+            <div class="row g-0">
+                <!-- Left Side - Brand & Features -->
+                <div class="col-lg-5" data-aos="fade-right">
+                    <div class="auth-left">
+                        <h2>Welcome Back!</h2>
+                        <p>Login to access your RoomMitra account and find your perfect accommodation</p>
+                        
+                        <div class="auth-features">
+                            <div class="auth-feature">
+                                <i class='bx bx-check-circle'></i>
+                                <span>100% Verified Listings</span>
+                            </div>
+                            <div class="auth-feature">
+                                <i class='bx bx-check-circle'></i>
+                                <span>Zero Brokerage Fee</span>
+                            </div>
+                            <div class="auth-feature">
+                                <i class='bx bx-check-circle'></i>
+                                <span>Safe & Secure Platform</span>
+                            </div>
+                            <div class="auth-feature">
+                                <i class='bx bx-check-circle'></i>
+                                <span>24/7 Customer Support</span>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- Right Side Login Form -->
-                    <div class="col-md-6 p-5 d-flex flex-column justify-content-center" data-aos="fade-left"
-                        data-aos-duration="1000">
-                        <h6 class="fw-bold text-success mb-4">
-                            {{ session('success') }} {{ session('error') }} @if (isset($email))
-                                {{ $email }}
-                            @endif
-                        </h6>
-                        <form method="POST" action="{{ route('login') }}" novalidate id="login-form">
+                </div>
+                
+                <!-- Right Side - Login Form -->
+                <div class="col-lg-7" data-aos="fade-left">
+                    <div class="auth-right">
+                        <div class="auth-header">
+                            <h3>Sign In</h3>
+                            <p>Enter your credentials to access your account</p>
+                        </div>
+                        
+                        @if(session('success'))
+                        <div class="alert-modern alert-success">
+                            <i class='bx bx-check-circle'></i> {{ session('success') }}
+                        </div>
+                        @endif
+                        
+                        @if(session('error'))
+                        <div class="alert-modern alert-error">
+                            <i class='bx bx-error-circle'></i> {{ session('error') }}
+                        </div>
+                        @endif
+                        
+                        @if(isset($email))
+                        <div class="alert-modern alert-success">
+                            <i class='bx bx-check-circle'></i> Verification email sent to {{ $email }}
+                        </div>
+                        @endif
+                        
+                        <form method="POST" action="{{ route('login') }}" novalidate>
                             @csrf
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <!-- Email -->
-                                    <div class="form-floating mb-3">
-                                        <input type="email" class="form-control" id="email" name="email"
-                                            placeholder="name@example.com" required>
-                                        <label for="email"><i class="fas fa-envelope me-2"></i>Email address</label>
-                                        <div class="invalid-feedback">
-                                            @error('email')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <!-- Password -->
-                                    <div class="form-floating mb-3">
-                                        <input type="password" class="form-control" id="password" name="password"
-                                            placeholder="Password" required>
-                                        <label for="password"><i class="fas fa-lock me-2"></i>Password</label>
-                                        <div class="invalid-feedback">
-                                            @error('password')
-                                                {{ $message }}
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
+                            
+                            <div class="form-group-modern">
+                                <label for="email" class="form-label-modern">
+                                    <i class='bx bx-envelope'></i> Email Address
+                                </label>
+                                <input type="email" 
+                                       class="form-control-modern @error('email') is-invalid @enderror" 
+                                       id="email" 
+                                       name="email" 
+                                       value="{{ old('email') }}"
+                                       placeholder="Enter your email" 
+                                       required>
+                                @error('email')
+                                <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                                @enderror
                             </div>
-
-
-
-
-
-                            <!-- Remember Me & Forgot Password -->
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                                    <label class="form-check-label" for="remember">Remember Me</label>
-                                </div>
-                                <a href="{{ route('password.request') }}">Forgot Password?</a>
+                            
+                            <div class="form-group-modern">
+                                <label for="password" class="form-label-modern">
+                                    <i class='bx bx-lock-alt'></i> Password
+                                </label>
+                                <input type="password" 
+                                       class="form-control-modern @error('password') is-invalid @enderror" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="Enter your password" 
+                                       required>
+                                @error('password')
+                                <div class="invalid-feedback" style="display: block;">{{ $message }}</div>
+                                @enderror
                             </div>
-
-                            <!-- Role -->
-                            <div class="mb-3">
-                                <label for="role" class="form-label fw-semibold">Who are you?</label>
-                                <select class="form-select" name="role" required>
-                                    <option value="user">Student</option>
-                                    <option value="room_owner">Room Owner</option>
+                            
+                            <div class="form-group-modern">
+                                <label for="role" class="form-label-modern">
+                                    <i class='bx bx-user'></i> Login As
+                                </label>
+                                <select class="form-select-modern" name="role" id="role" required>
+                                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>Student</option>
+                                    <option value="room_owner" {{ old('role') == 'room_owner' ? 'selected' : '' }}>Room Owner</option>
                                 </select>
                             </div>
-
-                            <!-- Submit -->
-                            <button type="submit" class="btn submit-btn w-100 py-2 mb-3">Login</button>
-
-                            <div class="text-center mb-3">
-                                <small class="text-muted">Don't have an account? <a
-                                        href="{{ route('register.form') }}">Register Now</a></small>
+                            
+                            <div class="remember-forgot">
+                                <div class="form-check-modern">
+                                    <input type="checkbox" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                                    <label for="remember">Remember me</label>
+                                </div>
+                                <a href="{{ route('password.request') }}" class="forgot-link">Forgot Password?</a>
                             </div>
-
-
-                            <!-- Social Login -->
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}"
-                                    class="btn btn-google w-100 me-2">
-                                    <i class="fab fa-google me-1"></i> Google (Student)
+                            
+                            <button type="submit" class="btn-auth-primary">
+                                <i class='bx bx-log-in'></i> Sign In
+                            </button>
+                            
+                            <div class="divider">
+                                <span>Or continue with</span>
+                            </div>
+                            
+                            <div class="social-login">
+                                <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'user']) }}" class="btn-social">
+                                    <i class='bx bxl-google'></i>
+                                    <span>Google (Student)</span>
                                 </a>
-
-                                <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'room_owner']) }}"
-                                    class="btn btn-google w-100 ms-2">
-                                    <i class="fab fa-google me-1"></i> Google (Owner)
+                                <a href="{{ route('social.login', ['provider' => 'google', 'role' => 'room_owner']) }}" class="btn-social">
+                                    <i class='bx bxl-google'></i>
+                                    <span>Google (Owner)</span>
                                 </a>
+                            </div>
+                            
+                            <div class="auth-footer">
+                                Don't have an account? <a href="{{ route('register.form') }}">Create Account</a>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-    </section>
+    </div>
+</section>
+
 @endsection
 
 @push('scripts')

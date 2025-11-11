@@ -1,745 +1,658 @@
 @extends('layouts.owner')
 @section('title', 'Edit Room')
+
 @push('styles')
-    <style>
-        .room-form-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-control {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .amenities-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .amenity-item {
-            margin-bottom: 10px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 30px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked+.slider {
-            background-color: #2196F3;
-        }
-
-        input:checked+.slider:before {
-            transform: translateX(30px);
-        }
-
-        .alert-success {
-            background-color: #d4edda !important;
-            border: 1px solid #28a745 !important;
-        }
-
-        .alert-success .alert-heading {
-            color: #155724;
-            font-weight: 600;
-        }
-
-        .icon {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(40, 167, 69, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-        }
-
-        .btn-close {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #28a745;
-        }
-
-        .btn-close:hover {
-            color: #155724;
-        }
-
-        .alert-dismissible {
-            padding-right: 40px;
-        }
-
-        .alert {
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-    </style>
+<link rel="stylesheet" href="{{ asset('css/owner-room-form.css') }}">
 @endpush
+
 @section('content')
+<div class="content">
+    <div class="container-fluid">
+        <div class="room-form-wrapper">
+            
+            {{-- Form Header --}}
+            <div class="room-form-header">
+                <h2>
+                    <i class='bx bxs-edit-alt'></i>
+                    Edit Room Details
+                </h2>
+                <p>Update the details of your room</p>
+            </div>
 
+            {{-- Success/Error Messages --}}
+            @if(session('success'))
+            <div class="alert alert-success">
+                <i class='bx bx-check-circle' style="font-size: 1.5rem;"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+            @endif
 
-    <h2 class="mb-4">Room Details Form</h2>
-    @forelse ($errors->all() as $error)
-        <div class="alert alert-danger">
-            {{ $error }}
-        </div>
-
-    @empty
-    @endforelse
-
-    @if (isset($success))
-        <div class="alert alert-success">
-            {{ $success }}
-        </div>
-    @endif
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <div class="d-flex align-items-center">
-                <div class="icon">
-                    <i class="fas fa-check-circle text-success"></i>
-                </div>
-                <div class="ms-3">
-                    <h4 class="alert-heading">{{ session('success') }}</h4>
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <i class='bx bx-error-circle' style="font-size: 1.5rem;"></i>
+                <div>
+                    <strong>Please fix the following errors:</strong>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+            @endif
 
-    <form id="roomForm" class="needs-validation" novalidate action="{{ route('owner.rooms.update', $room->room_id) }}" method="POST"
-        enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        <!-- Basic Info Section -->
-        <div class="room-form-section">
-            <h4 class="mb-3">Basic Information</h4>
-            <div class="row justify-content-between">
-                <div class="col-md-4 form-group">
-                    <label for="room_number">Room Number</label>
-                    <input type="text" class="form-control" id="room_number" name="room_number"
-                        value="{{ $room->room_number }}">
-                    <small class="alert-danger">
-                        @error('room_number')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-4 form-group">
-                    <label for="room_title">Room Title</label>
-                    <input type="text" class="form-control" id="room_title" name="room_title"
-                        value="{{ $room->room_title }}">
-                    <small class="alert-danger">
-                        @error('room_title')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-4 form-group">
-                    <label for="room_description">Description</label>
-                    <textarea class="form-control" id="room_description" rows="2" name="room_description">{{ $room->room_description }}</textarea>
-                    <small class="alert-danger">
-                        @error('room_description')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-            </div>
-        </div>
+            <form action="{{ route('owner.rooms.update', $room->slug) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-        <!-- Pricing Section -->
-        <div class="room-form-section">
-            <h4 class="mb-3">Pricing Details</h4>
-            <div class="row justify-content-between">
-                <div class="col-md-3 form-group">
-                    <label for="room_price">Room Price (₹)</label>
-                    <input type="number" class="form-control" id="room_price" step="0.01" name="room_price"
-                        value="{{ intval($room->room_price) }}">
-                    <small class="alert-danger">
-                        @error('room_price')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="security_deposit">Security Deposit (₹)</label>
-                    <input type="number" class="form-control" id="security_deposit" name="security_deposit"
-                        value="{{ intval($room->security_deposit) }}">
-                    <small class="alert-danger">
-                        @error('security_deposit')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="min_stay_months">Minimum Stay (Months)</label>
-                    <input type="number" class="form-control" id="min_stay_months" value="1" name="min_stay_months"
-                        value="{{ $room->min_stay_months }}">
-                    <small class="alert-danger">
-                        @error('min_stay_months')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-            </div>
-        </div>
-        <div class="room-form-section">
-            <h4 class="mb-3">Sharing Prices</h4>
-            <div class="row">
-                @forelse ($room->sharing_prices as $key => $sharing_price)
-                    <!-- Sharing Prices Section -->
+                {{-- Section 1: Basic Information --}}
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-info-circle'></i>
+                        Basic Information
+                    </h3>
+                    <p class="section-description">Enter the basic details of your room</p>
 
-                    <div class="col-md-4 form-group">
-                        <label for="{{ $key }}_price">{{ ucfirst($key) }} Occupancy Price (₹)</label>
-                        <input type="number" class="form-control" id="{{ $key }}_price"
-                            name="{{ $key }}_price" value="{{ $sharing_price }}">
-                        <small class="alert-danger">
-                            @error('{{ $key }}_price')
-                                {{ $message }}
+                    <div class="form-row cols-2">
+                        <div class="form-group">
+                            <label>
+                                Room Title <span class="required">*</span>
+                            </label>
+                            <input type="text" name="room_title" class="form-control @error('room_title') is-invalid @enderror" 
+                                   placeholder="e.g., Spacious 2BHK Near Railway Station" 
+                                   value="{{ old('room_title', $room->room_title) }}" required>
+                            <span class="form-text">
+                                <i class='bx bx-info-circle'></i>
+                                Give an attractive title to your room
+                            </span>
+                            @error('room_title')
+                            <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
+                        </div>
 
-                        </small>
+                        <div class="form-group">
+                            <label>
+                                Room Number <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="text" name="room_number" class="form-control" 
+                                   placeholder="e.g., 101, A-12" 
+                                   value="{{ old('room_number', $room->room_number) }}">
+                            <span class="form-text">
+                                <i class='bx bx-info-circle'></i>
+                                Flat/Room number if applicable
+                            </span>
+                        </div>
                     </div>
 
-
-
-
-                @empty
-                @endforelse
-            </div>
-        </div>
-
-
-        <!-- Capacity Section -->
-        <div class="room-form-section">
-            <h4>Capacity & Specifications</h4>
-            <div class="row justify-content-between">
-                <div class="col-md-3 form-group">
-                    <label for="room_capacity">Room Capacity</label>
-                    <input type="number" class="form-control" id="room_capacity" name="room_capacity"
-                        value="{{ $room->room_capacity }}">
-                    <small class="alert-danger">
-                        @error('room_capacity')
-                            {{ $message }}
+                    <div class="form-group">
+                        <label>
+                            Description <span class="required">*</span>
+                        </label>
+                        <textarea name="room_description" class="form-control @error('room_description') is-invalid @enderror" 
+                                  rows="4" placeholder="Describe your room, its features, nearby facilities, etc." required>{{ old('room_description', $room->room_description) }}</textarea>
+                        <span class="form-text">
+                            <i class='bx bx-info-circle'></i>
+                            Provide a detailed description to attract tenants
+                        </span>
+                        @error('room_description')
+                        <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
-                    </small>
-
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="total_beds">Total Beds</label>
-                    <input type="number" class="form-control" id="total_beds" name="total_beds"
-                        value="{{ $room->total_beds }}">
-                    <small class="alert-danger">
-                        @error('total_beds')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-
-                <div class="col-md-3 form-group">
-                    <label for="floor">Floor</label>
-                    <input type="number" class="form-control" id="floor" name="floor"
-                        value="{{ $room->floor }}">
-                    <small class="alert-danger">
-                        @error('floor')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Amenities Section -->
-        <div class="room-form-section">
-            <h4 class="mb-3">Amenities</h4>
-            <div class="row justify-content-between">
-                <div class="col-md-3 form-group d-flex justify-content-between">
-                    <label class="form-check-label">AC</label>
-                    <label class="switch">
-                        <input type="checkbox" class="form-check-input" name="ac"
-                            {{ old('ac', $room->ac ?? false) ? 'checked' : '' }}>
-
-                        <span class="slider"></span>
-                    </label>
-
-                </div>
-                <small class="alert-danger">
-                    @error('ac')
-                        {{ $message }}
-                    @enderror
-                </small>
-                <div class="col-md-3 form-group d-flex justify-content-between">
-                    <label class="form-check-label">Lift</label>
-                    <label class="switch">
-                        <input type="checkbox" class="form-check-input" name="lift"
-                            {{ $room->lift ?? false ? 'checked' : '' }}>
-                        <span class="slider"></span>
-                    </label>
-
-                </div>
-                <small class="alert-danger">
-                    @error('lift')
-                        {{ $message }}
-                    @enderror
-                </small>
-                <div class="col-md-3 form-group d-flex justify-content-between">
-                    <label class="form-check-label">Parking</label>
-                    <label class="switch">
-                        <input type="checkbox" class="form-check-input" name="parking"
-                            {{ $room->parking ?? false ? 'checked' : '' }}>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <small class="alert-danger">
-                    @error('parking')
-                        {{ $message }}
-                    @enderror
-                </small>
-                <div class="col-md-3 form-group d-flex justify-content-between">
-                    <label class="form-check-label">Kitchen</label>
-                    <label class="switch">
-                        <input type="checkbox" class="form-check-input" id="kitchen" name="kitchen"
-                            {{ $room->kitchen ?? false ? 'checked' : '' }}>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <small class="alert-danger">
-                    @error('kitchen')
-                        {{ $message }}
-                    @enderror
-                </small>
-
-
-            </div>
-        </div>
-        <!-- Room Specifications Section -->
-        <div class="room-form-section">
-            <h4 class="mb-3">Room Specifications</h4>
-            <div class="row">
-                <div class="col-md-4 form-group kitchen-type-container"
-                    style="display: {{ $room->kitchen ?? false ? '' : 'none' }};">
-                    <label for="kitchen_type">Kitchen Type</label>
-                    <select class="form-select form-control" id="kitchen_type" name="kitchen_type">
-                        <option value="">Select Kitchen Type</option>
-                        <option value="personal" {{ $room->kitchen_type === 'personal' ? 'selected' : '' }}>Personal
-                        </option>
-                        <option value="shared" {{ $room->kitchen_type === 'shared' ? 'selected' : '' }}>Shared</option>
-                    </select>
-                    <small class="alert-danger">
-                        @error('kitchen_type')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-4 form-group">
-                    <label for="bathroom_type">Bathroom Type</label>
-                    <select class="form-select form-control" id="bathroom_type" name="bathroom_type">
-                        <option value="">Select Bathroom Type</option>
-                        <option value="attached" {{ $room->bathroom_type === 'attached' ? 'selected' : '' }}>Attached
-                        </option>
-                        <option value="shared" {{ $room->bathroom_type === 'shared' ? 'selected' : '' }}>Shared</option>
-                    </select>
-                    <small class="alert-danger">
-                        @error('bathroom_type')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-
-
-            </div>
-        </div>
-
-
-        <!-- Amenities List Section -->
-        <!-- Amenities List Section -->
-        <div class="room-form-section">
-            <h4>Amenities List</h4>
-            <div class="amenities-list">
-                <div class="amenity-item">
-                    <div class="row">
-                        @forelse ($room->amenities()->get() as $amenity)
-                            <div class="col-md-4 form-group">
-                                <label for="amenity_name">Amenity Name</label>
-                                <select class="form-select form-control" id="amenity_name" name="amenity_name[]">
-                                    <option value="">Select Amenity</option>
-                                    <option value="wifi" {{ $amenity->amenity_name === 'wifi' ? 'selected' : '' }}>WiFi
-                                    </option>
-                                    <option value="laundry" {{ $amenity->amenity_name === 'laundry' ? 'selected' : '' }}>
-                                        Laundry</option>
-                                    <option value="tv" {{ $amenity->amenity_name === 'tv' ? 'selected' : '' }}>TV
-                                    </option>
-                                    <option value="ro" {{ $amenity->amenity_name === 'ro' ? 'selected' : '' }}>RO
-                                    </option>
-                                </select>
-                                <small class="alert-danger">
-                                    @error('amenity_name')
-                                        {{ $message }}
-                                    @enderror
-                                </small>
-                            </div>
-                            <div class="col-md-4 form-group">
-                                <label for="amenity_status">Status</label>
-                                <select class="form-select form-control" id="amenity_status" name="amenity_status[]"
-                                    onchange="handleAmenityStatusChange(this)">
-                                    <option value="free" {{ $amenity->status === 'free' ? 'selected' : '' }}>Free
-                                    </option>
-                                    <option value="paid" {{ $amenity->status === 'paid' ? 'selected' : '' }}>Paid
-                                    </option>
-                                    <option value="not_available"
-                                        {{ $amenity->status === 'not_available' ? 'selected' : '' }}>Not Available</option>
-                                </select>
-                                <small class="alert-danger">
-                                    @error('amenity_status')
-                                        {{ $message }}
-                                    @enderror
-                                </small>
-                            </div>
-                            <div class="col-md-4 form-group">
-                                <label for="amenity_price">Price (if paid)</label>
-                                <input type="number" class="form-control" id="amenity_price" name="amenity_price[]"
-                                    onchange="handleAmenityPriceChange(this)" value="{{ intval($amenity->price) }}"
-                                    {{ $amenity->status === 'paid' ? '' : 'disabled' }}>
-                                <small class="alert-danger">
-                                    @error('amenity_price')
-                                        {{ $message }}
-                                    @enderror
-                                </small>
-                            </div>
-                        @empty
-                        @endforelse
-
                     </div>
                 </div>
-            </div>
-            <button type="button" class="btn btn-primary" onclick="addAmenity()">Add More Amenities</button>
-        </div>
 
-        <!-- Location Section -->
-        <div class="room-form-section">
-            <h4 class="mb-3">Location Details</h4>
-            <div class="row justify-content-between">
-                <div class="col-md-4 form-group">
-                    <label for="address_line1">Address Line 1</label>
-                    <input type="text" class="form-control" id="address_line1" name="address_line1"
-                        value="{{ $room->address_line1 }}">
-                    <small class="alert-danger">
+                {{-- Section 2: Pricing Details --}}
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-money'></i>
+                        Pricing Details
+                    </h3>
+                    <p class="section-description">Set your monthly rent and other charges</p>
+
+                    <div class="form-row cols-3">
+                        <div class="form-group">
+                            <label>
+                                Monthly Rent <span class="required">*</span>
+                            </label>
+                            <div class="price-input-wrapper">
+                                <span class="currency-symbol">₹</span>
+                                <input type="number" name="room_price" class="form-control @error('room_price') is-invalid @enderror" 
+                                       placeholder="5000" value="{{ old('room_price', $room->room_price) }}" required min="500" step="100">
+                            </div>
+                            @error('room_price')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Security Deposit <span class="required">*</span>
+                            </label>
+                            <div class="price-input-wrapper">
+                                <span class="currency-symbol">₹</span>
+                                <input type="number" name="security_deposit" class="form-control @error('security_deposit') is-invalid @enderror" 
+                                       placeholder="10000" value="{{ old('security_deposit', $room->security_deposit) }}" required min="0" step="100">
+                            </div>
+                            @error('security_deposit')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Minimum Stay (Months) <span class="required">*</span>
+                            </label>
+                            <input type="number" name="min_stay_months" class="form-control @error('min_stay_months') is-invalid @enderror" 
+                                   placeholder="3" value="{{ old('min_stay_months', $room->min_stay_months) }}" required min="1" max="24">
+                            @error('min_stay_months')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Section 3: Room Specifications --}}
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-bed'></i>
+                        Room Specifications
+                    </h3>
+                    <p class="section-description">Define the capacity and specifications of your room</p>
+
+                    <div class="form-row cols-4">
+                        <div class="form-group">
+                            <label>
+                                Total Beds <span class="required">*</span>
+                            </label>
+                            <input type="number" name="total_beds" class="form-control @error('total_beds') is-invalid @enderror" 
+                                   placeholder="2" value="{{ old('total_beds', $room->total_beds) }}" required min="1" max="10">
+                            <span class="form-text">
+                                <i class='bx bx-info-circle'></i>
+                                Number of beds available
+                            </span>
+                            @error('total_beds')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Room Size (Sq.ft) <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="number" name="room_size" class="form-control @error('room_size') is-invalid @enderror" 
+                                   placeholder="150" value="{{ old('room_size', $room->room_size) }}" min="50" max="5000">
+                            <span class="form-text">
+                                <i class='bx bx-info-circle'></i>
+                                Room size in square feet
+                            </span>
+                            @error('room_size')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Room Capacity <span class="required">*</span>
+                            </label>
+                            <input type="number" name="room_capacity" class="form-control @error('room_capacity') is-invalid @enderror" 
+                                   placeholder="2" value="{{ old('room_capacity', $room->room_capacity) }}" required min="1" max="10">
+                            <span class="form-text">
+                                <i class='bx bx-info-circle'></i>
+                                Max persons allowed
+                            </span>
+                            @error('room_capacity')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Floor Number <span class="optional">(Optional)</span>
+                            </label>
+                            <input type="number" name="floor" class="form-control" 
+                                   placeholder="1" value="{{ old('floor', $room->floor) }}" min="0" max="50">
+                            <span class="form-text">
+                                <i class='bx bx-info-circle'></i>
+                                Floor number (0 for ground)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-row cols-2">
+                        <div class="form-group">
+                            <label>
+                                Bathroom Type <span class="required">*</span>
+                            </label>
+                            <select name="bathroom_type" class="form-control @error('bathroom_type') is-invalid @enderror" required>
+                                <option value="">Select Bathroom Type</option>
+                                <option value="attached" {{ old('bathroom_type', $room->bathroom_type) == 'attached' ? 'selected' : '' }}>Attached Bathroom</option>
+                                <option value="common" {{ old('bathroom_type', $room->bathroom_type) == 'common' ? 'selected' : '' }}>Common Bathroom</option>
+                            </select>
+                            @error('bathroom_type')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Kitchen Availability <span class="required">*</span>
+                            </label>
+                            <select name="kitchen_type" class="form-control @error('kitchen_type') is-invalid @enderror" id="kitchenType" required>
+                                <option value="">Select Kitchen Type</option>
+                                <option value="private" {{ old('kitchen_type', $room->kitchen_type) == 'private' ? 'selected' : '' }}>Private Kitchen</option>
+                                <option value="shared" {{ old('kitchen_type', $room->kitchen_type) == 'shared' ? 'selected' : '' }}>Shared Kitchen</option>
+                                <option value="none" {{ old('kitchen_type', $room->kitchen_type) == 'none' ? 'selected' : '' }}>No Kitchen</option>
+                            </select>
+                            <input type="hidden" name="kitchen" id="kitchenField" value="{{ old('kitchen', $room->kitchen) }}">
+                            @error('kitchen_type')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Section 4: Room Images --}}
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-images'></i>
+                        Room Images
+                    </h3>
+                    <p class="section-description">Update images - Leave empty to keep existing images</p>
+
+                    {{-- Existing Images --}}
+                    @if($room->images && $room->images->count() > 0)
+                    <div class="existing-images-section">
+                        <h4 class="existing-images-title">Current Images</h4>
+                        <div class="existing-images-grid">
+                            @foreach($room->images as $image)
+                            <div class="existing-image-card" id="image-{{ $image->id }}">
+                                <img src="{{ asset($image->image_url) }}" alt="Room image">
+                                <div class="existing-image-overlay">
+                                    <span class="badge">{{ $loop->iteration }}</span>
+                                </div>
+                                <button type="button" class="btn-delete-image" onclick="deleteImage({{ $image->id }})" title="Delete Image">
+                                    <i class='bx bx-trash'></i>
+                                </button>
+                            </div>
+                            @endforeach
+                        </div>
+                        <p class="form-text mt-2">
+                            <i class='bx bx-info-circle'></i>
+                            Upload new images below to replace existing ones
+                        </p>
+                    </div>
+                    @endif
+
+                    {{-- Modern Upload Area --}}
+                    <div class="image-upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class='bx bx-cloud-upload'></i>
+                        </div>
+                        <div class="upload-text">
+                            <h4>Drag & Drop Images Here</h4>
+                            <p>or click to browse from your device</p>
+                            <span class="upload-hint">
+                                <i class='bx bx-info-circle'></i>
+                                JPG, PNG or JPEG • Max 2MB each • Up to 5 images
+                            </span>
+                        </div>
+                        <input type="file" name="room_images[]" class="file-input-hidden" multiple accept="image/*" id="roomImages">
+                    </div>
+
+                    {{-- Upload Progress --}}
+                    <div class="upload-progress" id="uploadProgress" style="display: none;">
+                        <div class="upload-stats">
+                            <span>Selected Images: <strong id="imageCount">0</strong> / 5</span>
+                            <span>Total Size: <strong id="totalSize">0 KB</strong></span>
+                        </div>
+                    </div>
+
+                    {{-- Image Preview Grid --}}
+                    <div class="image-preview-grid" id="imagePreview"></div>
+                </div>
+
+                {{-- Section 5: Amenities --}}
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-star'></i>
+                        Amenities & Facilities
+                    </h3>
+                    <p class="section-description">Select the amenities available in your room</p>
+
+                    <div class="checkbox-grid">
+                        @foreach($amenities as $amenity)
+                        @php
+                            $isSelected = in_array($amenity->amenity_name, $selectedAmenities) || old($amenity->amenity_key);
+                        @endphp
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="{{ $amenity->amenity_key }}" id="{{ $amenity->amenity_key }}" value="1" {{ $isSelected ? 'checked' : '' }}>
+                            <label for="{{ $amenity->amenity_key }}">
+                                <i class='bx {{ $amenity->icon_class }}'></i> {{ $amenity->amenity_name }}
+                            </label>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Section 6: Location Details --}}
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class='bx bx-map'></i>
+                        Location Details
+                    </h3>
+                    <p class="section-description">Provide the complete address of your room</p>
+
+                    <div class="form-group">
+                        <label>
+                            Address Line 1 <span class="required">*</span>
+                        </label>
+                        <input type="text" name="address_line1" class="form-control @error('address_line1') is-invalid @enderror" 
+                               placeholder="House/Flat No., Street Name" 
+                               value="{{ old('address_line1', $room->address_line1) }}" required>
                         @error('address_line1')
-                            {{ $message }}
+                        <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
-                    </small>
-
-                </div>
-                <div class="col-md-4 form-group">
-                    <label for="address_line2">Address Line 2</label>
-                    <input type="text" class="form-control" id="address_line2" name="address_line2"
-                        value="{{ $room->address_line2 }}">
-                    <small class="alert-danger">
-                        @error('address_line2')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-4 form-group">
-                    <label for="locality">Locality</label>
-                    <input type="text" class="form-control" id="locality" name="locality"
-                        value="{{ $room->locality }}">
-                    <small class="alert-danger">
-                        @error('locality')
-                            {{ $message }}
-                        @enderror
-                    </small>
-
-                </div>
-            </div>
-            <div class="row justify-content-between">
-                <div class="col-md-3 form-group">
-                    <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" name="city"
-                        value="{{ $room->city }}">
-                    <small class="alert-danger">
-                        @error('city')
-                            {{ $message }}
-                        @enderror
-                    </small>
-
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="state">State</label>
-                    <input type="text" class="form-control" id="state" name="state"
-                        value="{{ $room->state }}">
-                    <small class="alert-danger">
-                        @error('state')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="pincode">Pincode</label>
-                    <input type="text" value="{{ $room->pincode }}" class="form-control" id="pincode"
-                        name="pincode">
-                    <small class="alert-danger">
-                        @error('pincode')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-            </div>
-        </div>
-        {{-- <div class="room-form-section">
-                <h4>Location Coordinates</h4>
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label for="latitude">Latitude</label>
-                        <input type="number" class="form-control" id="latitude" step="0.0000001"
-                            placeholder="Enter latitude coordinate">
                     </div>
-                    <div class="col-md-6 form-group">
-                        <label for="longitude">Longitude</label>
-                        <input type="number" class="form-control" id="longitude" step="0.0000001"
-                            placeholder="Enter longitude coordinate">
+
+                    <div class="form-group">
+                        <label>
+                            Address Line 2 <span class="optional">(Optional)</span>
+                        </label>
+                        <input type="text" name="address_line2" class="form-control" 
+                               placeholder="Landmark, Area" 
+                               value="{{ old('address_line2', $room->address_line2) }}">
+                    </div>
+
+                    <div class="form-row cols-2">
+                        <div class="form-group">
+                            <label>
+                                State <span class="required">*</span>
+                            </label>
+                            <input type="text" name="state" class="form-control @error('state') is-invalid @enderror" 
+                                   placeholder="e.g., Uttar Pradesh" 
+                                   value="{{ old('state', $room->state) }}" required>
+                            @error('state')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                City <span class="required">*</span>
+                            </label>
+                            <input type="text" name="city" class="form-control @error('city') is-invalid @enderror" 
+                                   placeholder="e.g., Lucknow" 
+                                   value="{{ old('city', $room->city) }}" required>
+                            @error('city')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row cols-2">
+                        <div class="form-group">
+                            <label>
+                                Locality <span class="required">*</span>
+                            </label>
+                            <input type="text" name="locality" class="form-control @error('locality') is-invalid @enderror" 
+                                   placeholder="e.g., Indira Nagar" 
+                                   value="{{ old('locality', $room->locality) }}" required>
+                            @error('locality')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label>
+                                Pincode <span class="required">*</span>
+                            </label>
+                            <input type="text" name="pincode" class="form-control @error('pincode') is-invalid @enderror" 
+                                   placeholder="226016" 
+                                   value="{{ old('pincode', $room->pincode) }}" required pattern="[0-9]{6}" maxlength="6">
+                            @error('pincode')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div id="map" style="height: 300px; width: 100%;"></div>
-                    </div>
+
+                {{-- Form Actions --}}
+                <div class="form-actions">
+                    <a href="{{ route('owner.rooms.index') }}" class="btn-secondary">
+                        <i class='bx bx-x'></i>
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        <i class='bx bx-check'></i>
+                        Update Room
+                    </button>
                 </div>
-            </div> --}}
-
-
-
-        <!-- Images Section -->
-        <div class="room-form-section">
-            <h4>Room Images</h4>
-            <div class="form-group">
-                <input type="file" class="form-control" multiple accept="image/*" id="room_images"
-                    name="room_images[]">
-            </div>
-            <small class="alert-danger">
-                @error('room_images')
-                    {{ $message }}
-                @enderror
-            </small>
-           
-            <div id="imagePreview"></div>
+            </form>
         </div>
-        <!-- Restrictions Section -->
-        <div class="room-form-section">
-            <h4 class="mb-3">Restrictions & Timings</h4>
-            <div class="row justify-content-between">
-                <div class="col-md-3 form-group">
-                    <label for="entry_time">Entry Time</label>
-                    <input type="time" class="form-control" id="entry_time" name="entry_time"
-                        value="{{ old('entry_time', isset($room->entry_time) ? \Carbon\Carbon::parse($room->entry_time)->format('H:i') : '') }}">
-                    <small class="alert-danger">
-                        @error('entry_time')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-
-                <div class="col-md-3 form-group">
-                    <label for="exit_time">Exit Time</label>
-                    <input type="time" class="form-control" id="exit_time" name="exit_time"
-                        value="{{ old('entry_time', isset($room->exit_time) ? \Carbon\Carbon::parse($room->exit_time)->format('H:i') : '') }}">
-                    <small class="alert-danger">
-                        @error('exit_time')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-            </div>
-            <div class="row justify-content-between">
-                <div class="col-md-6 form-group">
-                    <label for="restrictions">Special Restrictions</label>
-                    <textarea class="form-control" id="restrictions" rows="2" name="restrictions">{{ old('restrictions', $room->restrictions) }}</textarea>
-                    <small class="alert-danger">
-                        @error('restrictions')
-                            {{ $message }}
-                        @enderror
-                    </small>
-                </div>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-success">Submit</button>
-    </form>
-
+    </div>
+</div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=places"></script>
-    <script>
-        // Custom JavaScript
-        function handleAmenityStatusChange(select) {
-            const row = select.parentElement.parentElement;
-            const priceInput = row.querySelector('input[name="amenity_price[]"]');
-
-            if (select.value === 'free') {
-                priceInput.disabled = true;
-                priceInput.value = '';
-            } else {
-                priceInput.disabled = false;
-            }
+<script>
+    // Kitchen type handler
+    document.getElementById('kitchenType').addEventListener('change', function() {
+        const kitchenField = document.getElementById('kitchenField');
+        if (this.value === 'none') {
+            kitchenField.value = '0';
+        } else {
+            kitchenField.value = '1';
         }
+    });
 
-        function handleAmenityPriceChange(input) {
-            const row = input.parentElement.parentElement;
-            const statusSelect = row.querySelector('select[name="amenity_status[]"]');
+    // Initialize on page load
+    const kitchenType = document.getElementById('kitchenType').value;
+    if (kitchenType === 'none') {
+        document.getElementById('kitchenField').value = '0';
+    } else if (kitchenType) {
+        document.getElementById('kitchenField').value = '1';
+    }
 
-            if (input.value === '' && statusSelect.value === 'paid') {
-                alert('Please enter a price for paid amenities.');
-                input.focus();
-            }
-        }
-
-        function addAmenity() {
-            const amenitiesList = document.querySelector('.amenities-list');
-            const amenityHTML = `
-        <div class="amenity-item">
-            <div class="row">
-                <div class="col-md-4 form-group">
-                    <select class="form-select form-control" name="amenity_name[]" onchange="handleAmenityStatusChange(this)">
-                        <option value="">Select Amenity</option>
-                        <option value="wifi">WiFi</option>
-                        <option value="laundry">Laundry</option>
-                        <option value="tv">TV</option>
-                        <option value="ro">RO</option>
-                    </select>
-                </div>
-                <div class="col-md-4 form-group">
-                    <select class="form-select form-control" name="amenity_status[]" onchange="handleAmenityStatusChange(this)">
-                        <option value="free">Free</option>
-                        <option value="paid">Paid</option>
-                        <option value="not_available">Not Available</option>
-                    </select>
-                </div>
-                <div class="col-md-4 form-group">
-                    <input type="number" class="form-control" name="amenity_price[]" onchange="handleAmenityPriceChange(this)">
-                </div>
-            </div>
-        </div>
-    `;
-            amenitiesList.insertAdjacentHTML('beforeend', amenityHTML);
-
-            // Attach event listeners to the newly added elements
-            const newAmenityItem = amenitiesList.lastElementChild;
-            const statusSelect = newAmenityItem.querySelector('select[name="amenity_status[]"]');
-            const priceInput = newAmenityItem.querySelector('input[name="amenity_price[]"]');
-
-            // Initial state setup
-            handleAmenityStatusChange(statusSelect);
-        }
-        // Initialize existing amenities
-        document.querySelectorAll('select[name="amenity_status[]"]').forEach(select => {
-            handleAmenityStatusChange(select);
-        });
-
-        // Image Preview
-        document.getElementById('room_images').addEventListener('change', function(e) {
-            const imagePreview = document.getElementById('imagePreview');
-            imagePreview.innerHTML = '';
-
-            const files = e.target.files;
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    imagePreview.innerHTML += `
-                    <img src="${e.target.result}" class="img-thumbnail me-2 mb-2" style="max-width: 100px;">
-                `;
-                };
-
-                reader.readAsDataURL(file);
-            }
-        });
-
-
-
-        document.getElementById('kitchen').addEventListener('change', function() {
-            const kitchenTypeContainer = document.querySelector('.kitchen-type-container');
+    // Checkbox visual feedback
+    document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
             if (this.checked) {
-                kitchenTypeContainer.style.display = 'block';
+                this.closest('.checkbox-item').classList.add('checked');
             } else {
-                kitchenTypeContainer.style.display = 'none';
+                this.closest('.checkbox-item').classList.remove('checked');
             }
         });
+        
+        // Initialize on page load
+        if (checkbox.checked) {
+            checkbox.closest('.checkbox-item').classList.add('checked');
+        }
+    });
 
+    // ===================================
+    // MODERN IMAGE UPLOAD WITH DRAG & DROP
+    // ===================================
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('roomImages');
+    const previewGrid = document.getElementById('imagePreview');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const imageCount = document.getElementById('imageCount');
+    const totalSize = document.getElementById('totalSize');
+    
+    let selectedFiles = [];
+    
+    // Click to upload
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    // Highlight drop area
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragover');
+        });
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragover');
+        });
+    });
+    
+    // Handle dropped files
+    uploadArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    });
+    
+    // Handle selected files
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+    
+    function handleFiles(files) {
+        files = Array.from(files).filter(file => file.type.startsWith('image/'));
+        
+        if (selectedFiles.length + files.length > 5) {
+            alert('⚠️ Maximum 5 images allowed! You can only add ' + (5 - selectedFiles.length) + ' more image(s).');
+            return;
+        }
+        
+        files.forEach(file => {
+            if (file.size > 2048 * 1024) {
+                alert(`⚠️ ${file.name} is too large! Max size is 2MB.`);
+                return;
+            }
+            
+            selectedFiles.push(file);
+            previewFile(file, selectedFiles.length - 1);
+        });
+        
+        updateStats();
+        updateFileInput();
+    }
+    
+    function previewFile(file, index) {
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            const card = document.createElement('div');
+            card.className = 'preview-card';
+            card.dataset.index = index;
+            
+            card.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" class="preview-image">
+                <div class="preview-overlay"></div>
+                <div class="preview-badge">${index + 1}</div>
+                <div class="preview-remove" onclick="removeImage(${index})">
+                    <i class='bx bx-x'></i>
+                </div>
+                <div class="preview-info">
+                    <p class="preview-filename">${file.name}</p>
+                    <div class="preview-size">${formatFileSize(file.size)}</div>
+                </div>
+            `;
+            
+            previewGrid.appendChild(card);
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    
+    window.removeImage = function(index) {
+        selectedFiles.splice(index, 1);
+        previewGrid.innerHTML = '';
+        
+        selectedFiles.forEach((file, idx) => {
+            previewFile(file, idx);
+        });
+        
+        updateStats();
+        updateFileInput();
+    }
+    
+    function updateStats() {
+        const count = selectedFiles.length;
+        const size = selectedFiles.reduce((acc, file) => acc + file.size, 0);
+        
+        imageCount.textContent = count;
+        totalSize.textContent = formatFileSize(size);
+        
+        if (count > 0) {
+            uploadProgress.style.display = 'block';
+        } else {
+            uploadProgress.style.display = 'none';
+        }
+    }
+    
+    function updateFileInput() {
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        fileInput.files = dataTransfer.files;
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
 
-        let map;
-        let marker;
-
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: {
-                    lat: 28.7040602,
-                    lng: 77.1024932
-                }, // Default location (Delhi)
-                zoom: 13,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
-
-            marker = new google.maps.Marker({
-                position: map.getCenter(),
-                draggable: true,
-                map: map
-            });
-
-            // Update coordinates when marker is dragged
-            google.maps.event.addListener(marker, 'dragend', function() {
-                document.getElementById('latitude').value = marker.getPosition().lat();
-                document.getElementById('longitude').value = marker.getPosition().lng();
-            });
+    // Delete existing image function
+    function deleteImage(imageId) {
+        if (!confirm('Are you sure you want to delete this image?')) {
+            return;
         }
 
-        // Initialize map when the page loads
-        google.maps.event.addDomListener(window, 'load', initMap);
-    </script>
+        const imageCard = document.getElementById(`image-${imageId}`);
+        
+        fetch(`/owner/room-images/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the image card with animation
+                imageCard.style.opacity = '0';
+                imageCard.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    imageCard.remove();
+                    
+                    // Show success message
+                    const message = document.createElement('div');
+                    message.className = 'alert alert-success';
+                    message.innerHTML = '<i class="bx bx-check-circle"></i> Image deleted successfully!';
+                    message.style.position = 'fixed';
+                    message.style.top = '20px';
+                    message.style.right = '20px';
+                    message.style.zIndex = '9999';
+                    document.body.appendChild(message);
+                    
+                    setTimeout(() => message.remove(), 3000);
+                }, 300);
+            } else {
+                alert('Error: ' + (data.message || 'Failed to delete image'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete image. Please try again.');
+        });
+    }
+</script>
 @endpush

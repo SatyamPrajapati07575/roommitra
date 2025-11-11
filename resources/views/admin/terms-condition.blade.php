@@ -1,35 +1,37 @@
 @extends('layouts.admin')
 @section('title', 'Terms & Conditions')
-@push('styles')
-
-@endpush
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h4>📄 Edit Terms & Conditions</h4>
-      <button class="btn btn-outline-secondary">⏪ Back to CMS</button>
-    </div>
+    @include('admin.partials.page-header', [
+        'title' => 'Edit Terms & Conditions',
+        'icon' => 'bx bx-file'
+    ])
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class='bx bx-edit'></i> Terms & Conditions Content</h5>
+            </div>
   
     <form class="card-body row g-4" method="POST">
       @csrf
   
       <!-- Title -->
       <div class="col-12">
-        <label class="form-label">📝 Title *</label>
+        <label class="form-label"><i class='bx bx-text'></i> Title *</label>
         <input type="text" name="title" class="form-control" placeholder="e.g., Terms & Conditions" required>
       </div>
   
-      <!-- Full Content / Description -->
+      <!-- Full Content -->
       <div class="col-12">
-        <label class="form-label">📜 Full Content *</label>
+        <label class="form-label"><i class='bx bx-file-blank'></i> Full Content *</label>
         <!-- Replace with WYSIWYG like CKEditor/TinyMCE -->
         <textarea name="content" class="form-control wysiwyg-editor" rows="10" placeholder="Enter terms and conditions..." required></textarea>
       </div>
   
       <!-- SEO Section -->
       <hr class="mt-4">
-      <h5>🔍 SEO Meta Info</h5>
+      <h5><i class='bx bx-search'></i> SEO Meta Info</h5>
   
       <div class="col-md-6">
         <label class="form-label">Meta Title</label>

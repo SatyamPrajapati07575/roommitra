@@ -1,31 +1,36 @@
 @extends('layouts.admin')
-@section('title', 'Testimonials')
-@push('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-@endpush
+@section('title', 'Manage Testimonials')
 
 @section('content')
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5>🌟 Testimonials</h5>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#addTestimonialModal">➕ Add New</button>
+    @include('admin.partials.page-header', [
+        'title' => 'Manage Testimonials',
+        'icon' => 'bx bxs-quote-alt-left'
+    ])
+
+    <div class="container-fluid">
+        {{-- Add Button --}}
+        <div class="mb-3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addTestimonialModal">
+                <i class='bx bx-plus'></i> Add New Testimonial
+            </button>
         </div>
 
-        <div class="card-body table-responsive">
-            <table class="table table-hover text-center align-middle table-bordered">
-                <thead class="table-light">
-                    <tr class="align-middle">
-                        <th>#</th>
-                        <th>👤 Name</th>
-                        <th>📷 Photo</th>
-                        <th>🏷️ Designation</th>
-                        <th>⭐ Rating</th>
-                        <th>💬 Message</th>
-                        <th>📌 Status</th>
-                        <th>⚙️ Actions</th>
-                    </tr>
-                </thead>
+        {{-- Testimonials Table --}}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-hover text-center align-middle table-bordered">
+                    <thead class="thead-light">
+                        <tr class="bg-light text-dark">
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Photo</th>
+                            <th>Designation</th>
+                            <th>Rating</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
                 <tbody>
                     

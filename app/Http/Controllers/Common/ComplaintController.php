@@ -46,7 +46,7 @@ class ComplaintController extends Controller
         $complaint->save();
 
         // Send mail to admin
-        Mail::to('atul800498@gmail.com')->send(new ComplaintMail($complaint));
+        Mail::to('developersp741@gmail.com')->send(new ComplaintMail($complaint));
 
         // Send mail to user
         if ($complaint->email) {

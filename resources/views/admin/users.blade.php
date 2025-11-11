@@ -27,12 +27,13 @@
 @endpush
 
 @section('content')
+    {{-- Page Header --}}
+    @include('admin.partials.page-header', [
+        'title' => 'Manage Users',
+        'icon' => 'bx bxs-user-account'
+    ])
 
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4>👥 Manage All Users</h4>
-            <button class="btn btn-success">📤 Export</button>
-        </div>
 
         <!-- Filters -->
         <div class="card p-3 mb-4">
@@ -65,7 +66,7 @@
                     </select>
                 </div>
                 <div class="col-md-1">
-                    <button class="btn btn-primary w-100">🔍</button>
+                    <button class="btn btn-primary w-100"><i class='bx bx-search'></i></button>
                 </div>
             </div>
         </div>
@@ -103,12 +104,14 @@
                     <td>{{ $user->profile->city ?? 'N/A' }}</td>
                     <td>
                         <span class="badge bg-{{ $user->is_verified ? 'success' : 'warning' }}">
-                            {{ $user->is_verified ? '✔ Verified' : '❌ Not Verified' }}
+                            <i class='bx {{ $user->is_verified ? "bx-check-circle" : "bx-x-circle" }}'></i>
+                            {{ $user->is_verified ? 'Verified' : 'Not Verified' }}
                         </span>
                     </td>
                     <td>
                         <span class="badge bg-{{ $user->is_blocked ? 'danger' : 'success' }}">
-                            {{ $user->is_blocked ? '❌ Blocked' : '✔ Active' }}
+                            <i class='bx {{ $user->is_blocked ? "bx-block" : "bx-check" }}'></i>
+                            {{ $user->is_blocked ? 'Blocked' : 'Active' }}
                         </span>
                     </td>
                     <td>{{ $user->created_at->diffForHumans() }}</td>
@@ -116,27 +119,27 @@
                         <button class="btn btn-sm btn-outline-info" data-toggle="modal"
                             data-target="#viewUserModal" data-id="{{ $user->user_id }}"
                             title="View User">
-                            👁️
+                            <i class='bx bx-show'></i>
                         </button>
 
                         @if (!$user->is_blocked)
                             <button class="btn btn-sm btn-outline-warning" data-toggle="modal"
                                 data-target="#blockUserModal" data-id="{{ $user->user_id }}"
-                                title="Block User">
-                                🚫
+                                data-name="{{ $user->full_name }}" title="Block User">
+                                <i class='bx bx-block'></i>
                             </button>
                         @else
                             <button class="btn btn-sm btn-outline-success" data-toggle="modal"
                                 data-target="#unblockUserModal" data-id="{{ $user->user_id }}"
                                 data-name="{{ $user->full_name }}" title="Unblock User">
-                                ✅
+                                <i class='bx bx-check-circle'></i>
                             </button>
                         @endif
 
                         <button class="btn btn-sm btn-outline-danger" data-toggle="modal"
                             data-target="#deleteUserModal" data-id="{{ $user->user_id }}"
-                            title="Delete User">
-                            🗑️
+                            data-name="{{ $user->full_name }}" title="Delete User">
+                            <i class='bx bx-trash'></i>
                         </button>
                     </td>
                 </tr>
@@ -160,7 +163,7 @@
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="viewUserModalLabel">👤 User Profile</h5>
+                    <h5 class="modal-title" id="viewUserModalLabel"><i class='bx bx-user-circle'></i> User Profile</h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span>&times;</span>
                     </button>
@@ -180,7 +183,7 @@
                     </div>
 
                     <!-- Section 1: Basic Info -->
-                    <h6 class="mb-3">📄 Basic Information</h6>
+                    <h6 class="mb-3"><i class='bx bx-info-circle'></i> Basic Information</h6>
                     <div class="row">
                         <div class="col-md-4"><strong>Phone:</strong> <span id="userPhone">--</span></div>
                         <div class="col-md-4"><strong>City:</strong> <span id="userCity">--</span></div>
@@ -192,7 +195,7 @@
                     </div>
 
                     <!-- Section 2: Address -->
-                    <h6 class="mt-4 mb-2">🏠 Address Details</h6>
+                    <h6 class="mt-4 mb-2"><i class='bx bx-home'></i> Address Details</h6>
                     <div class="row">
                         <div class="col-md-6"><strong>Current:</strong> <span id="currentAddress">--</span></div>
                         <div class="col-md-6"><strong>Permanent:</strong> <span id="permanentAddress">--</span></div>
@@ -202,7 +205,7 @@
                     </div>
 
                     <!-- Section 3: Education -->
-                    <h6 class="mt-4 mb-2">🎓 Education</h6>
+                    <h6 class="mt-4 mb-2"><i class='bx bx-book'></i> Education</h6>
                     <div class="row">
                         <div class="col-md-4"><strong>College:</strong> <span id="collegeName">--</span></div>
                         <div class="col-md-4"><strong>Course:</strong> <span id="courseName">--</span></div>
@@ -210,25 +213,25 @@
                     </div>
 
                     <!-- Section 4: Socials & Bio -->
-                    <h6 class="mt-4 mb-2">🔗 Social & Bio</h6>
+                    <h6 class="mt-4 mb-2"><i class='bx bx-link'></i> Social & Bio</h6>
                     <p id="userBio" class="mb-2">--</p>
                     <div id="socialLinks">
                         <!-- Dynamically render social icons/links here -->
                     </div>
 
                     <!-- Section 5: Verification Badges -->
-                    <h6 class="mt-4 mb-2">✅ Verification Status</h6>
+                    <h6 class="mt-4 mb-2"><i class='bx bx-check-shield'></i> Verification Status</h6>
                     <div class="row">
-                        <div class="col-md-4">📧 Email: <span id="emailVerifyBadge"
+                        <div class="col-md-4"><i class='bx bx-envelope'></i> Email: <span id="emailVerifyBadge"
                                 class="badge badge-pill badge-secondary">--</span></div>
-                        <div class="col-md-4">📱 Phone: <span id="phoneVerifyBadge"
+                        <div class="col-md-4"><i class='bx bx-phone'></i> Phone: <span id="phoneVerifyBadge"
                                 class="badge badge-pill badge-secondary">--</span></div>
-                        <div class="col-md-4">🆔 Aadhar: <span id="aadharVerifyBadge"
+                        <div class="col-md-4"><i class='bx bx-id-card'></i> Aadhar: <span id="aadharVerifyBadge"
                                 class="badge badge-pill badge-secondary">--</span></div>
                     </div>
 
                     <!-- Section 6: Documents -->
-                    <h6 class="mt-4 mb-2">📎 Uploaded Documents</h6>
+                    <h6 class="mt-4 mb-2"><i class='bx bx-paperclip'></i> Uploaded Documents</h6>
                     <ul class="list-group mb-2">
                         <li class="list-group-item">
                             Aadhar Card:
@@ -246,8 +249,6 @@
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">✏️ Edit User</button>
-                    <button type="button" class="btn btn-danger">🚫 Block</button>
                 </div>
             </div>
         </div>
@@ -262,7 +263,7 @@
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="blockUserModalLabel">🚫 Block User</h5>
+                    <h5 class="modal-title" id="blockUserModalLabel"><i class='bx bx-block'></i> Block User</h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span>&times;</span>
                     </button>
@@ -279,12 +280,12 @@
                         <textarea id="blockReason" class="form-control" rows="3" placeholder="Enter reason (optional)..."></textarea>
                     </div>
                     <div class="alert alert-warning mt-3 mb-0">
-                        ⚠️ You can unblock the user later from the user details section.
+                        <i class='bx bx-error'></i> You can unblock the user later from the user details section.
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger">✅ Confirm Block</button>
+                    <button type="submit" class="btn btn-danger"><i class='bx bx-check'></i> Confirm Block</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -297,7 +298,7 @@
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title" id="unblockUserModalLabel">✅ Unblock User</h5>
+                    <h5 class="modal-title" id="unblockUserModalLabel"><i class='bx bx-check-circle'></i> Unblock User</h5>
                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                         <span>&times;</span>
                     </button>
@@ -310,7 +311,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success">✅ Confirm Unblock</button>
+                    <button type="submit" class="btn btn-success"><i class='bx bx-check'></i> Confirm Unblock</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -322,7 +324,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">🗑️ Confirm Deletion</h5>
+                <h5 class="modal-title"><i class='bx bx-trash'></i> Confirm Deletion</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span>&times;</span>
                 </button>
@@ -350,7 +352,7 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn"><i class='bx bx-trash'></i> Delete</button>
             </div>
         </div>
     </div>
@@ -477,7 +479,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('❌ Failed to load user details.');
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Failed to load user details'
+                    });
                 });
         });
     });
@@ -522,12 +527,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                alert('User blocked successfully.');
+                Toast.fire({
+                    icon: 'success',
+                    title: 'User blocked successfully'
+                });
                 $('#blockUserModal').modal('hide');
+                setTimeout(() => location.reload(), 1000);
             })
             .catch(error => {
                 console.error(error);
-                alert('Failed to block user.');
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to block user'
+                });
             });
     });
 });
@@ -555,12 +567,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         return response.json();
                     })
                     .then(data => {
-                        alert('User unblocked successfully.');
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'User unblocked successfully'
+                        });
                         $('#unblockUserModal').modal('hide');
+                        setTimeout(() => location.reload(), 1000);
                     })
                     .catch(error => {
                         console.error(error);
-                        alert('Failed to unblock user.');
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Failed to unblock user'
+                        });
                     });
             });
         });
@@ -596,7 +615,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Validate the reason before sending
                 if (!reason) {
-                    alert('❌ Please select a reason for deletion.');
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Please select a reason for deletion'
+                    });
                     return;
                 }
 
@@ -615,12 +637,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(data => {
                     $('#deleteUserModal').modal('hide');
-                    alert('✅ User deleted successfully.');
-                    location.reload(); // Optionally reload to update list
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'User deleted successfully'
+                    });
+                    setTimeout(() => location.reload(), 1000);
                 })
                 .catch(error => {
                     console.error(error);
-                    alert('❌ Failed to delete user.');
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Failed to delete user'
+                    });
                 });
             });
         });

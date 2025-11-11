@@ -9,6 +9,8 @@ class Booking extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'booking_id';
+
     protected $fillable = [
         'user_id',
         'room_id',
@@ -20,35 +22,40 @@ class Booking extends Model
         'payment_status',
         'payment_method',
         'transaction_id',
+        'payment_frequency',
+        'payment_type',
+        'monthly_amount',
+        'duration_months',
+        'occupancy',
     ];
 
     // A booking belongs to a user
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
     // A booking is for a room
     public function room()
     {
-        return $this->belongsTo(Room::class, 'room_id');
+        return $this->belongsTo(Room::class, 'room_id', 'room_id');
     }
 
     // A booking is related to an owner (same user table for owners)
     public function owner()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class, 'owner_id', 'user_id');
     }
 
     // A booking may have one review
     public function review()
     {
-        return $this->hasOne(Review::class, 'booking_id');
+        return $this->hasOne(Review::class, 'booking_id', 'booking_id');
     }
 
     public function payment()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class, 'booking_id', 'booking_id');
     }
 
 }

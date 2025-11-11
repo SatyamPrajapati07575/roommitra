@@ -1,0 +1,346 @@
+/* Booking Status Page - Modern Design */
+
+:root {
+    --success-color: #10b981;
+    --success-light: #d1fae5;
+    --danger-color: #ef4444;
+    --danger-light: #fee2e2;
+    --primary-color: #667eea;
+    --primary-dark: #764ba2;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.status-container {
+    padding: 120px 0 60px 0;
+    min-height: calc(100vh - 180px);
+    display: flex;
+    align-items: center;
+}
+
+.status-card {
+    background: white;
+    border-radius: 2rem;
+    padding: 3rem 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Icon Container */
+.status-icon-container {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: iconPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s both;
+}
+
+@keyframes iconPop {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.status-icon-container.success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+}
+
+.status-icon-container.fail {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+    box-shadow: 0 10px 40px rgba(239, 68, 68, 0.3);
+}
+
+.status-icon-container i {
+    font-size: 4rem;
+    color: white;
+}
+
+/* Animated checkmark */
+.status-icon-container.success i {
+    animation: checkBounce 0.8s ease 0.5s both;
+}
+
+@keyframes checkBounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Confetti effect background for success */
+.status-icon-container.success::before {
+    content: '🎉';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    font-size: 2rem;
+    animation: confetti 1s ease infinite;
+}
+
+.status-icon-container.success::after {
+    content: '✨';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    font-size: 2rem;
+    animation: confetti 1s ease 0.5s infinite;
+}
+
+@keyframes confetti {
+    0%, 100% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+}
+
+/* Status Title */
+.status-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.status-title.success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.status-title.fail {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Status Message */
+.status-message {
+    font-size: 1.2rem;
+    color: #64748b;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Info Card */
+.status-info-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.status-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.status-info-row:last-child {
+    border-bottom: none;
+}
+
+.status-info-label {
+    color: #64748b;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-info-label i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.status-info-value {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+/* Action Buttons */
+.status-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.status-btn {
+    padding: 1rem 2rem;
+    border-radius: 0.875rem;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.status-btn i {
+    font-size: 1.2rem;
+}
+
+.status-btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.status-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    transform: translateY(-2px);
+    color: white;
+}
+
+.status-btn-secondary {
+    background: white;
+    color: #64748b;
+    border: 2px solid #e2e8f0;
+}
+
+.status-btn-secondary:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-2px);
+    color: #64748b;
+}
+
+.status-btn-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.status-btn-success:hover {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Alert Message */
+.status-alert {
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideDown 0.5s ease 0.8s both;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.status-alert.success {
+    background: var(--success-light);
+    border-left: 4px solid var(--success-color);
+    color: #065f46;
+}
+
+.status-alert.info {
+    background: #dbeafe;
+    border-left: 4px solid #3b82f6;
+    color: #1e40af;
+}
+
+.status-alert.warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+}
+
+.status-alert i {
+    font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .status-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .status-title {
+        font-size: 2rem;
+    }
+    
+    .status-icon-container {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .status-icon-container i {
+        font-size: 3rem;
+    }
+    
+    .status-actions {
+        flex-direction: column;
+    }
+    
+    .status-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Countdown Timer */
+.countdown-timer {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin-top: 1rem;
+}
+
+.countdown-timer span {
+    font-weight: 700;
+    color: var(--primary-color);
+}

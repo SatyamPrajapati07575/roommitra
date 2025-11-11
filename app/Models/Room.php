@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Room extends Model
 {
@@ -15,6 +16,7 @@ class Room extends Model
         'owner_id',
         'room_number',
         'room_title',
+        'slug',
         'room_description',
         'room_price',
         'security_deposit',
@@ -22,6 +24,7 @@ class Room extends Model
         'sharing_prices',
         'room_capacity',
         'total_beds',
+        'room_size',
         'floor',
         'ac',
         'lift',
@@ -48,6 +51,37 @@ class Room extends Model
         'is_verified',
         'status',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($room) {
+            $room->slug = static::generateUniqueSlug($room->room_title);
+        });
+
+        static::updating(function ($room) {
+            if ($room->isDirty('room_title')) {
+                $room->slug = static::generateUniqueSlug($room->room_title, $room->room_id);
+            }
+        });
+    }
+
+    protected static function generateUniqueSlug($title, $ignoreId = null)
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->when($ignoreId, function ($query) use ($ignoreId) {
+            $query->where('room_id', '!=', $ignoreId);
+        })->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
 
     protected $casts = [
         'sharing_prices' => 'array',

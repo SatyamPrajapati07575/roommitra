@@ -9,6 +9,9 @@ class RoomImage extends Model
 {
     use HasFactory;
 
+    protected $table = 'room_images';
+    // Primary key is 'id' (default) - table uses $table->id()
+
     protected $fillable = [
         'room_id',
         'image_type',

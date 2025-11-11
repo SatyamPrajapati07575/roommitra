@@ -1,50 +1,52 @@
 @extends('layouts.admin')
 @section('title', 'Contact Us')
-@push('styles')
-
-@endpush
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h4>📬 Edit Contact Page Content</h4>
-      <button class="btn btn-secondary">⏪ Back</button>
-    </div>
+    @include('admin.partials.page-header', [
+        'title' => 'Edit Contact Us Page',
+        'icon' => 'bx bx-phone'
+    ])
+
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class='bx bx-edit'></i> Contact Information</h5>
+            </div>
   
     <form class="card-body row g-4" method="POST" enctype="multipart/form-data">
       @csrf
   
       <!-- Title -->
       <div class="col-12">
-        <label class="form-label">📝 Page Title *</label>
+        <label class="form-label"><i class='bx bx-text'></i> Page Title *</label>
         <input type="text" name="title" class="form-control" placeholder="e.g., Get in Touch" required>
       </div>
   
       <!-- Description -->
       <div class="col-12">
-        <label class="form-label">📄 Short Description *</label>
+        <label class="form-label"><i class='bx bx-align-left'></i> Short Description *</label>
         <textarea name="description" class="form-control" rows="3" placeholder="Short info or support note..." required></textarea>
       </div>
   
       <!-- Contact Info -->
       <div class="col-md-6">
-        <label class="form-label">📍 Office Address *</label>
+        <label class="form-label"><i class='bx bx-map'></i> Office Address *</label>
         <input type="text" name="address" class="form-control" placeholder="123, Sunset Street, Delhi" required>
       </div>
   
       <div class="col-md-6">
-        <label class="form-label">📞 Phone Number *</label>
+        <label class="form-label"><i class='bx bx-phone'></i> Phone Number *</label>
         <input type="tel" name="phone" class="form-control" placeholder="+91 9876543210" required>
       </div>
   
       <div class="col-md-6">
-        <label class="form-label">📧 Email Address *</label>
+        <label class="form-label"><i class='bx bx-envelope'></i> Email Address *</label>
         <input type="email" name="email" class="form-control" placeholder="support@example.com" required>
       </div>
   
       <!-- Map Embed -->
       <div class="col-12">
-        <label class="form-label">🗺️ Google Map Embed Code (Optional)</label>
+        <label class="form-label"><i class='bx bx-map-alt'></i> Google Map Embed Code (Optional)</label>
         <textarea name="map_embed" class="form-control" rows="3" placeholder='<iframe src="..."></iframe>'></textarea>
       </div>
   

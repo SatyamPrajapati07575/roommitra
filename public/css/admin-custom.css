@@ -1,0 +1,270 @@
+/**
+ * RoomMitra - Admin Panel Custom Styles
+ * Version: 2.0.0
+ * All custom styles for admin panel
+ */
+
+/* ===================================
+   1. GLOBAL STYLES
+   =================================== */
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+/* ===================================
+   2. SIDEBAR STYLES
+   =================================== */
+.main-sidebar {
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.brand-link {
+    background: rgba(255,255,255,0.05) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.brand-link:hover {
+    background: rgba(255,255,255,0.08) !important;
+}
+
+.brand-text {
+    font-weight: 700 !important;
+    font-size: 1.3rem !important;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    font-weight: bold;
+}
+
+/* ===================================
+   3. USER PANEL
+   =================================== */
+.user-panel {
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+.user-panel .image img {
+    width: 45px !important;
+    height: 45px !important;
+    border: 2px solid #6366f1 !important;
+}
+
+.user-panel .info a {
+    color: #fff !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+}
+
+.user-panel small {
+    color: #94a3b8 !important;
+    font-size: 0.8rem !important;
+}
+
+/* ===================================
+   4. SIDEBAR MENU
+   =================================== */
+.nav-sidebar .nav-link {
+    color: #cbd5e1 !important;
+    border-radius: 8px !important;
+    margin: 3px 8px !important;
+    padding: 0.75rem 1rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.nav-sidebar .nav-link:hover {
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: #fff !important;
+    transform: translateX(5px);
+}
+
+.nav-sidebar .nav-link.active {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.nav-sidebar .nav-link i {
+    font-size: 1.1rem !important;
+    width: 25px !important;
+}
+
+.nav-treeview .nav-link {
+    padding-left: 2.5rem !important;
+}
+
+/* ===================================
+   5. TOP NAVBAR
+   =================================== */
+.main-header {
+    background: #fff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+}
+
+.main-header .nav-link {
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+
+.main-header .nav-link:hover {
+    color: #6366f1 !important;
+}
+
+/* ===================================
+   6. CONTENT WRAPPER
+   =================================== */
+.content-wrapper {
+    background: #f8fafc !important;
+}
+
+/* ===================================
+   7. FOOTER
+   =================================== */
+.main-footer {
+    background: #fff !important;
+    border-top: 1px solid #e2e8f0 !important;
+    color: #64748b !important;
+}
+
+/* ===================================
+   8. STATISTICS CARDS
+   =================================== */
+.small-box {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    transition: all 0.3s ease !important;
+}
+
+.small-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+}
+
+.small-box .icon {
+    font-size: 70px !important;
+}
+
+.small-box h3 {
+    font-weight: 700 !important;
+}
+
+.small-box-footer {
+    border-radius: 0 0 12px 12px !important;
+    font-weight: 500 !important;
+}
+
+/* ===================================
+   9. CARDS
+   =================================== */
+.card {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+
+.card-header {
+    background: white !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    font-weight: 600 !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+/* ===================================
+   10. BADGES
+   =================================== */
+.badge-warning {
+    background: #f59e0b !important;
+}
+
+.badge-info {
+    background: #3b82f6 !important;
+}
+
+.badge-success {
+    background: #22c55e !important;
+}
+
+.badge-danger {
+    background: #ef4444 !important;
+}
+
+/* ===================================
+   11. BUTTONS
+   =================================== */
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    border: none !important;
+    font-weight: 600 !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* ===================================
+   12. DROPDOWNS
+   =================================== */
+.dropdown-menu {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    border-radius: 8px !important;
+}
+
+/* ===================================
+   13. TABLES
+   =================================== */
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* ===================================
+   14. FORMS
+   =================================== */
+.form-control:focus {
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15) !important;
+}
+
+/* ===================================
+   15. RESPONSIVE
+   =================================== */
+@media (max-width: 768px) {
+    .small-box {
+        margin-bottom: 1rem;
+    }
+    
+    .logo-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
+    }
+    
+    .brand-text {
+        font-size: 1.1rem !important;
+    }
+}

@@ -5,20 +5,32 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RoomMitra | Admin Login</title>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    
+    <!-- BoxIcons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- AdminLTE Theme -->
+    <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css?v=3.2.0') }}">
+    
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css?v=3.2.0') }}">
+    
+    <!-- Custom Admin Login Styles -->
+    <link rel="stylesheet" href="{{ asset('css/admin-login.css') }}?v=2.0.0">
 
 <body class="hold-transition login-page">
     <div class="login-box">
-        <div class="card card-outline card-primary">
+        <div class="card">
             <div class="card-header text-center">
-                <h1 class="h1"><b>Admin</b>Login</h1>
+                <div class="login-logo">
+                    <div class="logo-icon">
+                        <i class='bx bxs-home-heart'></i>
+                    </div>
+                </div>
+                <h1><b>Admin</b> Login</h1>
             </div>
             <div class="card-body">
                 
@@ -32,20 +44,20 @@
                 <form action="{{ route('admin.login') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email">
-                        <div class="input-group-append">
+                        <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <i class='bx bx-envelope'></i>
                             </div>
                         </div>
+                        <input type="email" class="form-control" placeholder="Email" name="email" required>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password">
-                        <div class="input-group-append">
+                        <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                                <i class='bx bx-lock-alt'></i>
                             </div>
                         </div>
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
                     </div>
                     <div class="row">
                         <div class="col-8">

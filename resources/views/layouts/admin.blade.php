@@ -6,15 +6,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RoomMitra | @yield('title', 'Home')</title>
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
-    @stack('styles')
-    <!-- Theme style -->
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    
+    <!-- BoxIcons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- AdminLTE Theme -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
-    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> --}}
+    
+    <!-- Custom Admin Styles -->
+    <link rel="stylesheet" href="{{ asset('css/admin-custom.css') }}?v=2.0.0">
+    
+    @stack('styles')
 
 </head>
 
@@ -26,14 +31,19 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
-                            class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                        <i class='bx bx-menu' style="font-size: 1.5rem;"></i>
+                    </a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="" class="nav-link">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                        <i class='bx bx-home-circle'></i> Dashboard
+                    </a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="{{ route('admin.complaints.index') }}" class="nav-link">Support</a>
+                    <a href="{{ route('admin.complaints.index') }}" class="nav-link">
+                        <i class='bx bx-support'></i> Support
+                    </a>
                 </li>
             </ul>
 
@@ -42,24 +52,24 @@
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
+                        <i class='bx bx-bell' style="font-size: 1.3rem;"></i>
                         <span class="badge badge-warning navbar-badge">5</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <span class="dropdown-item dropdown-header">5 Notifications</span>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 2 new bookings
+                            <i class='bx bx-calendar-check mr-2'></i> 2 new bookings
                             <span class="float-right text-muted text-sm">3 mins</span>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 3 check-ins today
+                            <i class='bx bx-user-check mr-2'></i> 3 check-ins today
                             <span class="float-right text-muted text-sm">12 hours</span>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 1 new review
+                            <i class='bx bx-star mr-2'></i> 1 new review
                             <span class="float-right text-muted text-sm">2 days</span>
                         </a>
                         <div class="dropdown-divider"></div>
@@ -68,7 +78,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                        <i class="fas fa-expand-arrows-alt"></i>
+                        <i class='bx bx-fullscreen' style="font-size: 1.3rem;"></i>
                     </a>
                 </li>
             </ul>
@@ -77,26 +87,25 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index.html" class="brand-link">
-                <img src="https://placehold.co/600x400" alt="Property Logo" class="brand-image img-circle elevation-3"
-                    style="opacity: .8; width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
-
-                <span class="brand-text font-weight-light">RoomMitra</span>
+            <a href="{{ route('admin.dashboard') }}" class="brand-link">
+                <div class="logo-icon">
+                    <i class='bx bxs-home-heart'></i>
+                </div>
+                <span class="brand-text">RoomMitra</span>
             </a>
 
             <!-- Sidebar -->
             <div class="sidebar">
                 <!-- Sidebar user panel -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
                     <div class="image">
-                        <img src="https://placehold.co/600x400" alt="Property Logo"
-                            class="brand-image img-circle elevation-3"
-                            style="opacity: .8; width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
-
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::guard('admin')->user()->full_name ?? 'Admin') }}&background=6366f1&color=fff&bold=true" 
+                             alt="Admin Avatar" 
+                             class="img-circle elevation-2">
                     </div>
                     <div class="info">
-                        <a href="{{ route('admin.dashboard') }}" class="d-block">{{ $user->full_name ?? '' }}</a>
-                        <small class="d-block text-muted">Admin Panel</small>
+                        <a href="{{ route('admin.dashboard') }}" class="d-block">{{ Auth::guard('admin')->user()->full_name ?? 'Admin' }}</a>
+                        <small class="d-block text-muted">Administrator</small>
                     </div>
                 </div>
 
@@ -105,140 +114,117 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
 
-                        <!-- Dashboard -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.dashboard') }}" class="nav-link active">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Dashboard</p>
-                            </a>
-                        </li>
+                        {{-- Dashboard --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.dashboard',
+                            'icon' => 'bx bxs-dashboard',
+                            'title' => 'Dashboard'
+                        ])
 
-                        <!-- Users -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.users.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>Users</p>
-                            </a>
-                        </li>
+                        {{-- Users --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.users.index',
+                            'activePattern' => 'admin.users.*',
+                            'icon' => 'bx bxs-user-account',
+                            'title' => 'Users'
+                        ])
 
-                        {{-- <!-- Owners -->
-                <li class="nav-item">
-                    <a href="{{}}" class="nav-link">
-                        <i class="nav-icon fas fa-user-tie"></i>
-                        <p>Owners</p>
-                    </a>
-                </li> --}}
+                        {{-- Rooms --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.rooms.index',
+                            'activePattern' => 'admin.rooms.*',
+                            'icon' => 'bx bxs-home',
+                            'title' => 'Rooms'
+                        ])
 
-                        <!-- Rooms -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.rooms.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-bed"></i>
-                                <p>Rooms</p>
-                            </a>
-                        </li>
+                        {{-- Bookings --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.bookings.index',
+                            'activePattern' => 'admin.bookings.*',
+                            'icon' => 'bx bxs-calendar-check',
+                            'title' => 'Bookings'
+                        ])
 
-                        <!-- Bookings -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.bookings.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-calendar-check"></i>
-                                <p>Bookings</p>
-                            </a>
-                        </li>
+                        {{-- Payments --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.payments.index',
+                            'activePattern' => 'admin.payments.*',
+                            'icon' => 'bx bxs-wallet',
+                            'title' => 'Payments'
+                        ])
 
-                        <!-- Payments -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.payments.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-money-bill-wave"></i>
-                                <p>Payments</p>
-                            </a>
-                        </li>
+                        {{-- Complaints --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.complaints.index',
+                            'activePattern' => 'admin.complaints.*',
+                            'icon' => 'bx bxs-error-circle',
+                            'title' => 'Complaints'
+                        ])
 
-                        <!-- Complaints -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.complaints.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-exclamation-triangle"></i>
-                                <p>Complaints</p>
-                            </a>
-                        </li>
+                        {{-- Contact Requests --}}
+                        @include('admin.partials.sidebar-menu-item', [
+                            'route' => 'admin.contact-messages.index',
+                            'activePattern' => 'admin.contact-messages.*',
+                            'icon' => 'bx bxs-message-dots',
+                            'title' => 'Contact Requests'
+                        ])
 
-                        <!-- Contact Requests -->
-                        <li class="nav-item">
-                            <a href="{{ route('admin.contact-messages.index') }}" class="nav-link">
-                                <i class="nav-icon fas fa-phone-alt"></i>
-                                <p>Contact Requests</p>
-                            </a>
-                        </li>
-
-                        <!-- CMS Pages -->
-                        <li class="nav-item">
-                            <a class="nav-link">
-                                <i class="nav-icon fas fa-file-alt"></i>
+                        {{-- CMS Pages --}}
+                        <!-- <li class="nav-item {{ request()->is('admin/faqs*') || request()->is('admin/testimonials*') || request()->is('admin/about-us*') || request()->is('admin/contact-us*') || request()->is('admin/terms-conditions*') ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ request()->is('admin/faqs*') || request()->is('admin/testimonials*') || request()->is('admin/about-us*') || request()->is('admin/contact-us*') || request()->is('admin/terms-conditions*') ? 'active' : '' }}">
+                                <i class='bx bxs-file-doc nav-icon'></i>
                                 <p>
                                     CMS Pages
-                                    <i class="fas fa-angle-left right"></i>
+                                    <i class='bx bx-chevron-down right'></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.faqs.index') }}" class="nav-link">
-                                        <i class="far fa-question-circle nav-icon"></i>
+                                    <a href="{{ route('admin.faqs.index') }}" class="nav-link {{ request()->is('admin/faqs*') ? 'active' : '' }}">
+                                        <i class='bx bx-help-circle nav-icon'></i>
                                         <p>FAQs</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.testimonials.index') }}" class="nav-link">
-                                        <i class="far fa-smile nav-icon"></i>
+                                    <a href="{{ route('admin.testimonials.index') }}" class="nav-link {{ request()->is('admin/testimonials*') ? 'active' : '' }}">
+                                        <i class='bx bxs-quote-alt-left nav-icon'></i>
                                         <p>Testimonials</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.about-us.index') }}" class="nav-link">
-                                        <i class="fas fa-info-circle nav-icon"></i>
+                                    <a href="{{ route('admin.about-us.index') }}" class="nav-link {{ request()->is('admin/about-us*') ? 'active' : '' }}">
+                                        <i class='bx bx-info-circle nav-icon'></i>
                                         <p>About Us</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.contact-us.index') }}" class="nav-link">
-                                        <i class="fas fa-address-book nav-icon"></i>
+                                    <a href="{{ route('admin.contact-us.index') }}" class="nav-link {{ request()->is('admin/contact-us*') ? 'active' : '' }}">
+                                        <i class='bx bx-phone nav-icon'></i>
                                         <p>Contact Us</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('admin.terms-conditions.index') }}" class="nav-link">
-                                        <i class="fas fa-gavel nav-icon"></i>
+                                    <a href="{{ route('admin.terms-conditions.index') }}" class="nav-link {{ request()->is('admin/terms-conditions*') ? 'active' : '' }}">
+                                        <i class='bx bx-file nav-icon'></i>
                                         <p>Terms & Conditions</p>
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
 
-                        <!-- Reports -->
+                        {{-- Settings --}}
                         <li class="nav-item">
-                            <a href="" class="nav-link">
-                                <i class="nav-icon fas fa-chart-bar"></i>
-                                <p>Reports</p>
-                            </a>
-                        </li>
-
-                        <!-- Settings -->
-                        <li class="nav-item">
-                            <a href="" class="nav-link">
-                                <i class="nav-icon fas fa-cogs"></i>
+                            <a href="#" class="nav-link">
+                                <i class='bx bxs-cog nav-icon'></i>
                                 <p>
                                     Settings
-                                    <i class="fas fa-angle-left right"></i>
+                                    <i class='bx bx-chevron-down right'></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="" class="nav-link">
-                                        <i class="fas fa-user nav-icon"></i>
-                                        <p>Profile</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a href="{{ route('admin.logout') }}" class="nav-link">
-                                        <i class="fas fa-sign-out-alt nav-icon"></i>
+                                        <i class='bx bx-log-out nav-icon'></i>
                                         <p>Logout</p>
                                     </a>
                                 </li>
@@ -266,13 +252,10 @@
 
         <!-- Main Footer -->
         <footer class="main-footer">
-            <!-- To the right -->
             <div class="float-right d-none d-sm-inline">
-                Anything you want
+                <b>Version</b> 2.0.0
             </div>
-            <!-- Default to the left -->
-            <strong>Copyright &copy; 2025 <a>RoomMitra</a>.</strong> All rights
-            reserved.
+            <strong>Copyright &copy; 2025 <a href="#" style="color: #6366f1;">RoomMitra</a>.</strong> All rights reserved.
         </footer>
     </div>
     <!-- ./wrapper -->

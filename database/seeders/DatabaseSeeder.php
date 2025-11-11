@@ -18,20 +18,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call([
+            AdminSeeder::class,  // Create admin accounts first
+            UserSeeder::class,   // Then create users
+        ]);
 
-        // User::factory()->count(20)->create();
-
-
-        // $this->call([
-        //     AdminSeeder::class,
-        //     RoomSeeder::class
-        // ]);
-
-
-        // $this->call(FaqSeeder::class);
-        // Complaint::factory()->count(20)->create();
-        Testimonial::factory()->count(10)->create();
-
+        // Testimonial::factory()->count(10)->create();
     }
 }

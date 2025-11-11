@@ -35,6 +35,8 @@ use App\Http\Controllers\Admin\{
     TermConditionController
 };
 
+use App\Http\Controllers\User\CompareController;
+
 use App\Http\Controllers\Owner\{
     RoomController,
     RoomImageController,
@@ -108,9 +110,7 @@ Route::get('faqs', [CommonFaqController::class, 'index'])->name('faqs');
 
 //Rooms
 Route::get('rooms-list', [CommonRoomController::class, 'index'])->name('rooms');
-Route::get('room/{id}', [CommonRoomController::class, 'show'])
-    ->name('room.show')
-    ->middleware(['user']);
+Route::get('room/{slug}', [CommonRoomController::class, 'show'])->name('room.show');
 // Contact Us
 Route::get('contact', [CommonContactMessageController::class, 'index'])->name('contact.form');
 Route::post('contact', [CommonContactMessageController::class, 'store'])->name('contact.store');
@@ -123,8 +123,17 @@ Route::get('complaint', [ComplaintController::class, 'index'])->name('complaint.
 Route::post('complaint', [ComplaintController::class, 'store'])->name('complaint.store');
 
 Route::middleware('auth')->group(function () {
+    // Wishlist Routes
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/toggle/{roomId}', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    
+    // Compare Routes
+    Route::prefix('user/compare')->name('user.compare.')->group(function () {
+        Route::get('/', [CompareController::class, 'index'])->name('index');
+        Route::post('/toggle/{roomId}', [CompareController::class, 'toggle'])->name('toggle');
+        Route::post('/clear', [CompareController::class, 'clear'])->name('clear');
+        Route::get('/count', [CompareController::class, 'count'])->name('count');
+    });
 });
 
 /**
@@ -197,12 +206,18 @@ Route::prefix('owner')->middleware('owner')->name('owner.')->group(function () {
     Route::get('/', [OwnerController::class, 'index'])->name('dashboard');
     // Room Management
     Route::resource('rooms', RoomController::class);
+    Route::patch('/rooms/{slug}/update-status', [RoomController::class, 'updateStatus'])->name('rooms.update-status');
     Route::resource('room-images', RoomImageController::class);
     Route::resource('furniture-items', FurnitureItemController::class);
     Route::resource('amenities', AmenityController::class);
 
     // Booking Requests
     Route::resource('bookings', BookingRequestController::class);
+    Route::patch('/bookings/{id}/confirm', [BookingRequestController::class, 'confirmBooking'])->name('bookings.confirm');
+    
+    // Owner Bookings & Payments
+    Route::get('/my-bookings', [\App\Http\Controllers\Owner\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/my-payments', [\App\Http\Controllers\Owner\PaymentController::class, 'index'])->name('payments.index');
 
     // Profile Management
     Route::resource('profile', OwnerProfileController::class);
@@ -244,3 +259,28 @@ Route::prefix('user')->name('user.')->middleware('user')->group(function () {
     // OTP Management
     Route::post('otp', [UserOtpController::class, 'sendOtp'])->name('otp.send');
 });
+
+/**
+ * =============================================================
+ * Razorpay Payment API Routes (Used by checkout page)
+ * =============================================================
+ */
+Route::prefix('payment')->name('payment.')->middleware('auth')->group(function () {
+    // Create payment order (AJAX)
+    Route::post('/create-order', [\App\Http\Controllers\PaymentController::class, 'createOrder'])->name('create-order');
+    
+    // Verify payment (AJAX)
+    Route::post('/verify', [\App\Http\Controllers\PaymentController::class, 'verify'])->name('verify');
+    
+    // Success page (after payment)
+    Route::get('/success/{paymentId}', [\App\Http\Controllers\PaymentController::class, 'success'])->name('success');
+    
+    // Failed page (if payment fails)
+    Route::get('/failed', [\App\Http\Controllers\PaymentController::class, 'failed'])->name('failed');
+    
+    // Payment history (optional)
+    Route::get('/history', [\App\Http\Controllers\PaymentController::class, 'history'])->name('history');
+});
+
+// Razorpay Webhook (No auth required)
+Route::post('/payment/webhook', [\App\Http\Controllers\PaymentController::class, 'webhook'])->name('payment.webhook');

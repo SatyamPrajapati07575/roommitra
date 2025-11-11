@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Asset Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is used for cache busting of CSS and JS assets. Increment
+    | this version whenever you make changes to your assets to force browsers
+    | to reload the latest version instead of using cached versions.
+    |
+    */
+
+    'asset_version' => env('ASSET_VERSION', '1.1.0'),
+
 ];

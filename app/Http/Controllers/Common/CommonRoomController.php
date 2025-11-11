@@ -38,13 +38,34 @@ class CommonRoomController extends Controller
         return view('common.room-list', compact('rooms'));
     }
     
-    public function show(string $id)
+    public function show(string $slug)
     {
-        $room = Room::where('room_id', $id)
+        $room = Room::where('slug', $slug)
+            ->where('is_verified', true)
+            ->where('status', 'available')
             ->with(['images', 'amenities', 'owner'])
             ->whereHas('owner')
             ->firstOrFail();
         $room->sharing_prices = json_decode($room->sharing_prices, true);
-        return view('user.room-details', compact('room'));
+        
+        // Check if room is in user's wishlist
+        $isInWishlist = false;
+        if (auth()->check()) {
+            $isInWishlist = \App\Models\Wishlist::where('user_id', auth()->id())
+                ->where('room_id', $room->room_id)
+                ->exists();
+        }
+        
+        // Get similar rooms
+        $similarRooms = Room::where('slug', '!=', $slug)
+            ->where('is_verified', true)
+            ->where('status', 'available')
+            ->where('city', $room->city)
+            ->with(['images', 'amenities'])
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+        
+        return view('common.room-detail', compact('room', 'similarRooms', 'isInWishlist'));
     }
 }

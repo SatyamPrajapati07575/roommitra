@@ -31,34 +31,61 @@ class CommonContactMessageController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone' => 'required|string|max:20',
-            'subject' => 'required|string',
-            'message' => 'required|string',
-        ]);
-    
-        $contact = new ContactMessage();
-        $contact->name = $validated['name'];
-        $contact->email = $validated['email'];
-        $contact->phone = $validated['phone'];
-        $contact->subject = $validated['subject'];
-        $contact->message = $validated['message'];
-        $contact->status = 'new';
-        $contact->save();
-    
-        Mail::send('emails.contact-confirmation', ['contact' => $contact], function ($m) use ($contact) {
-            $m->to($contact->email, $contact->name)
-              ->subject('We Received Your Message');
-        });
-    
- 
-        Mail::send('emails.contact-notification', ['contact' => $contact], function ($m) {
-            $m->to('atul800498@gmail.com', 'Admin')
-              ->subject('New Contact Message Received');
-        });
-        return response()->json(['message' => 'Your message has been submitted.'], 200);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|string|max:20',
+                'subject' => 'required|string|max:255',
+                'message' => 'required|string|max:2000',
+            ]);
+        
+            $contact = new ContactMessage();
+            $contact->name = $validated['name'];
+            $contact->email = $validated['email'];
+            $contact->phone = $validated['phone'];
+            $contact->subject = $validated['subject'];
+            $contact->message = $validated['message'];
+            $contact->status = 'new';
+            $contact->save();
+        
+            // Try to send emails (won't fail if mail server not configured)
+            try {
+                Mail::send('emails.contact-confirmation', ['contact' => $contact], function ($m) use ($contact) {
+                    $m->to($contact->email, $contact->name)
+                      ->subject('We Received Your Message - RoomMitra');
+                });
+            } catch (\Exception $e) {
+                \Log::warning('Contact confirmation email failed: ' . $e->getMessage());
+            }
+        
+            try {
+                Mail::send('emails.contact-notification', ['contact' => $contact], function ($m) use ($contact) {
+                    $m->to('developersp741@gmail.com', 'Admin')
+                      ->subject('New Contact Message from ' . $contact->name);
+                });
+            } catch (\Exception $e) {
+                \Log::warning('Contact notification email failed: ' . $e->getMessage());
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you! Your message has been received. We will get back to you soon.'
+            ], 200);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please check your input and try again.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Contact form error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again later.'
+            ], 500);
+        }
     }
 
     /**
