@@ -156,6 +156,50 @@
                             </ul>
                         </li>
 
+                        <!-- Visit Management -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-calendar-check"></i>
+                                <p>
+                                    Visit Management
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('owner.visits.index') }}" class="nav-link">
+                                        <i class="fas fa-list nav-icon"></i>
+                                        <p>Visit Requests</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Virtual Tours -->
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-video"></i>
+                                <p>
+                                    Virtual Tours
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('owner.virtual-tours.index') }}" class="nav-link">
+                                        <i class="fas fa-list nav-icon"></i>
+                                        <p>Manage Tours</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('owner.virtual-tours.create') }}" class="nav-link">
+                                        <i class="fas fa-plus nav-icon"></i>
+                                        <p>Create Tour</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
                         <!-- Bookings -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">

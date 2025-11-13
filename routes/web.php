@@ -16,7 +16,9 @@ use App\Http\Controllers\Common\{
     ComplaintController,
     ForgotPasswordController,
     SocialAuthController,
-    WishlistController
+    WishlistController,
+    VisitController,
+    VirtualTourController
 };
 use App\Http\Controllers\Admin\{
     AboutUsController,
@@ -45,7 +47,9 @@ use App\Http\Controllers\Owner\{
     BookingRequestController,
     OwnerProfileController,
     ComplaintResponseController,
-    OwnerController
+    OwnerController,
+    VisitManagementController,
+    VirtualTourManagementController
 };
 
 use App\Http\Controllers\User\{
@@ -111,6 +115,10 @@ Route::get('faqs', [CommonFaqController::class, 'index'])->name('faqs');
 //Rooms
 Route::get('rooms-list', [CommonRoomController::class, 'index'])->name('rooms');
 Route::get('room/{slug}', [CommonRoomController::class, 'show'])->name('room.show');
+
+// Virtual Tours (Public)
+Route::get('room/{room}/virtual-tour', [VirtualTourController::class, 'show'])->name('virtual-tour.show');
+Route::get('room/{room}/virtual-tour/embed', [VirtualTourController::class, 'embed'])->name('virtual-tour.embed');
 // Contact Us
 Route::get('contact', [CommonContactMessageController::class, 'index'])->name('contact.form');
 Route::post('contact', [CommonContactMessageController::class, 'store'])->name('contact.store');
@@ -133,6 +141,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/toggle/{roomId}', [CompareController::class, 'toggle'])->name('toggle');
         Route::post('/clear', [CompareController::class, 'clear'])->name('clear');
         Route::get('/count', [CompareController::class, 'count'])->name('count');
+    });
+
+    // Visit Routes
+    Route::prefix('visits')->name('visits.')->group(function () {
+        Route::get('/', [VisitController::class, 'index'])->name('index');
+        Route::get('/create/{room}', [VisitController::class, 'create'])->name('create');
+        Route::post('/', [VisitController::class, 'store'])->name('store');
+        Route::get('/{visit}', [VisitController::class, 'show'])->name('show');
+        Route::patch('/{visit}/cancel', [VisitController::class, 'cancel'])->name('cancel');
     });
 });
 
@@ -216,7 +233,7 @@ Route::prefix('owner')->middleware('owner')->name('owner.')->group(function () {
     Route::patch('/bookings/{id}/confirm', [BookingRequestController::class, 'confirmBooking'])->name('bookings.confirm');
     
     // Owner Bookings & Payments
-    Route::get('/my-bookings', [\App\Http\Controllers\Owner\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/my-bookings', [\App\Http\Controllers\Owner\BookingController::class, 'index'])->name('my-bookings.index');
     Route::get('/my-payments', [\App\Http\Controllers\Owner\PaymentController::class, 'index'])->name('payments.index');
 
     // Profile Management
@@ -227,6 +244,18 @@ Route::prefix('owner')->middleware('owner')->name('owner.')->group(function () {
 
     // Complaint Responses
     Route::resource('complaints', ComplaintResponseController::class);
+
+    // Visit Management
+    Route::prefix('visits')->name('visits.')->group(function () {
+        Route::get('/', [VisitManagementController::class, 'index'])->name('index');
+        Route::get('/{visit}', [VisitManagementController::class, 'show'])->name('show');
+        Route::patch('/{visit}/respond', [VisitManagementController::class, 'respond'])->name('respond');
+        Route::patch('/{visit}/complete', [VisitManagementController::class, 'markCompleted'])->name('complete');
+    });
+
+    // Virtual Tour Management
+    Route::resource('virtual-tours', VirtualTourManagementController::class);
+    Route::patch('/virtual-tours/{virtualTour}/toggle-status', [VirtualTourManagementController::class, 'toggleStatus'])->name('virtual-tours.toggle-status');
 });
 
 

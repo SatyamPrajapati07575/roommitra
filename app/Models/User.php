@@ -13,6 +13,11 @@ class User extends Authenticatable
     use HasFactory, Notifiable, SoftDeletes;
 
     protected $primaryKey = 'user_id';
+    
+    public function getRouteKeyName()
+    {
+        return 'user_id';
+    }
 
     protected $fillable = [
         'full_name',

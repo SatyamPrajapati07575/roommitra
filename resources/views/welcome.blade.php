@@ -5,6 +5,8 @@
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/home.css') }}?v={{ config('app.asset_version', '1.0.0') }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @endpush
 
 @section('content')
@@ -63,22 +65,51 @@
         <div class="row g-4">
             @php
                 $features = [
-                    ['Verified Listings', 'bx-shield-check', 'Every property is physically verified by our team before listing', 100],
-                    ['Zero Brokerage', 'bx-wallet', 'Direct contact with owners — no hidden charges or middlemen', 200],
-                    ['Student Safety', 'bx-lock-alt', 'Background-verified owners and safe neighborhood ratings', 300],
-                    ['Smart Filters', 'bx-filter-alt', 'Find rooms by budget, amenities, and proximity to your college', 100],
-                    ['24/7 Support', 'bx-support', 'Our team is always here to help you with any queries', 200],
-                    ['Easy Booking', 'bx-calendar-check', 'Simple and secure booking process with instant confirmation', 300]
+                    ['Verified Listings', 'fas fa-shield', 'Every property is physically verified by our team before listing', 100, '#10b981'],
+                    ['Zero Brokerage', 'fas fa-wallet', 'Direct contact with owners — no hidden charges or middlemen', 200, '#3b82f6'],
+                    ['Student Safety', 'fas fa-user-shield', 'Background-verified owners and safe neighborhood ratings', 300, '#8b5cf6'],
+                    ['Smart Filters', 'fas fa-filter', 'Find rooms by budget, amenities, and proximity to your college', 100, '#f59e0b'],
+                    ['24/7 Support', 'fas fa-headset', 'Our team is always here to help you with any queries', 200, '#ef4444'],
+                    ['Easy Booking', 'fas fa-calendar-check', 'Simple and secure booking process with instant confirmation', 300, '#06b6d4']
                 ];
             @endphp
             @foreach($features as $index => $feature)
             <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ $feature[3] }}">
                 <div class="feature-card-modern">
-                    <div class="feature-icon-modern">
-                        <i class='bx {{ $feature[1] }}'></i>
+                    <div class="feature-icon-modern" style="background: linear-gradient(135deg, {{ $feature[4] }}, {{ $feature[4] }}88);">
+                        <i class='{{ $feature[1] }}'></i>
                     </div>
                     <h3>{{ $feature[0] }}</h3>
                     <p>{{ $feature[2] }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+    <div class="container-modern">
+        <div class="row g-4">
+            @php
+                $stats = [
+                    ['1000+', 'Verified Properties', 'fas fa-home', '#10b981'],
+                    ['5000+', 'Happy Students', 'fas fa-users', '#3b82f6'],
+                    ['50+', 'Partner Colleges', 'fas fa-graduation-cap', '#8b5cf6'],
+                    ['24/7', 'Customer Support', 'fas fa-clock', '#f59e0b']
+                ];
+            @endphp
+            @foreach($stats as $index => $stat)
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="{{ ($index + 1) * 100 }}">
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, {{ $stat[3] }}, {{ $stat[3] }}88);">
+                        <i class="{{ $stat[2] }}"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" data-count="{{ $stat[0] }}">{{ $stat[0] }}</h3>
+                        <p class="stat-label">{{ $stat[1] }}</p>
+                    </div>
                 </div>
             </div>
             @endforeach
@@ -251,13 +282,50 @@
     </div>
 </section>
 
+<!-- Floating Action Button -->
+<div class="floating-action-btn" id="fabBtn">
+    <div class="fab-main">
+        <i class='fas fa-plus'></i>
+    </div>
+    <div class="fab-options">
+        <a href="{{ route('rooms') }}" class="fab-option" title="Browse Rooms">
+            <i class='fas fa-search'></i>
+            <span>Browse Rooms</span>
+        </a>
+        @auth
+            <a href="{{ route('user.dashboard') }}" class="fab-option" title="Dashboard">
+                <i class='fas fa-tachometer-alt'></i>
+                <span>Dashboard</span>
+            </a>
+        @else
+            <a href="{{ route('login') }}" class="fab-option" title="Login">
+                <i class='fas fa-sign-in-alt'></i>
+                <span>Login</span>
+            </a>
+        @endauth
+        <a href="#hero-modern" class="fab-option" title="Back to Top">
+            <i class='fas fa-arrow-up'></i>
+            <span>Top</span>
+        </a>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-// Swiper Testimonials
-const testimonialSwiper = new Swiper('.testimonialSwiper', {
+// Initialize AOS
+AOS.init({
+    duration: 1000,
+    easing: 'ease-in-out',
+    once: true,
+    mirror: false
+});
+
+// Initialize Swiper
+const swiper = new Swiper('.testimonialSwiper', {
     slidesPerView: 1,
     spaceBetween: 30,
     loop: true,
@@ -279,18 +347,26 @@ const testimonialSwiper = new Swiper('.testimonialSwiper', {
     }
 });
 
-// Counter Animation
-const counters = document.querySelectorAll(".counter");
+// Enhanced Counter Animation
 const animateCounters = () => {
+    const counters = document.querySelectorAll(".stat-number");
     counters.forEach((counter) => {
+        const target = counter.getAttribute("data-count");
+        const numericTarget = parseInt(target.replace(/[^\d]/g, '')) || 0;
+        let count = 0;
+        const increment = numericTarget / 50;
+        
         const updateCount = () => {
-            const target = +counter.getAttribute("data-target");
-            const count = +counter.innerText;
-            const inc = Math.ceil(target / 100);
-
-            if (count < target) {
-                counter.innerText = count + inc;
-                setTimeout(updateCount, 30);
+            if (count < numericTarget) {
+                count += increment;
+                if (target.includes('+')) {
+                    counter.innerText = Math.ceil(count) + '+';
+                } else if (target.includes('/')) {
+                    counter.innerText = target; // For 24/7 format
+                } else {
+                    counter.innerText = Math.ceil(count);
+                }
+                requestAnimationFrame(updateCount);
             } else {
                 counter.innerText = target;
             }
@@ -299,18 +375,85 @@ const animateCounters = () => {
     });
 };
 
-let started = false;
-window.addEventListener("scroll", () => {
-    const statsSection = document.querySelector(".stats-section");
-    if (statsSection) {
-        const sectionTop = statsSection.getBoundingClientRect().top;
-        const screenHeight = window.innerHeight;
+// Intersection Observer for counter animation
+const statsSection = document.querySelector(".stats-section");
+if (statsSection) {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounters();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    observer.observe(statsSection);
+}
 
-        if (!started && sectionTop < screenHeight) {
-            started = true;
-            animateCounters();
+// Search functionality
+document.getElementById('hero-search-input')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const searchTerm = this.value.trim();
+        if (searchTerm) {
+            window.location.href = `{{ route('rooms') }}?search=${encodeURIComponent(searchTerm)}`;
         }
     }
+});
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Floating Action Button
+const fabBtn = document.getElementById('fabBtn');
+const fabMain = fabBtn.querySelector('.fab-main');
+const fabOptions = fabBtn.querySelector('.fab-options');
+let fabOpen = false;
+
+fabMain.addEventListener('click', () => {
+    fabOpen = !fabOpen;
+    fabBtn.classList.toggle('active', fabOpen);
+    fabMain.querySelector('i').style.transform = fabOpen ? 'rotate(45deg)' : 'rotate(0deg)';
+});
+
+// Close FAB when clicking outside
+document.addEventListener('click', (e) => {
+    if (!fabBtn.contains(e.target) && fabOpen) {
+        fabOpen = false;
+        fabBtn.classList.remove('active');
+        fabMain.querySelector('i').style.transform = 'rotate(0deg)';
+    }
+});
+
+// Show/hide FAB based on scroll
+let lastScrollTop = 0;
+window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop > 300) {
+        fabBtn.style.display = 'block';
+        if (scrollTop > lastScrollTop) {
+            // Scrolling down
+            fabBtn.style.transform = 'translateY(100px)';
+        } else {
+            // Scrolling up
+            fabBtn.style.transform = 'translateY(0)';
+        }
+    } else {
+        fabBtn.style.display = 'none';
+    }
+    
+    lastScrollTop = scrollTop;
 });
 </script>
 @endpush

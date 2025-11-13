@@ -22,18 +22,13 @@
             </div>
         @endif
         <div class="row">
-            @php
-                $user = auth()->user();
-                $profile = $user->ownerProfile;
-            @endphp
-
             <!-- Sidebar/Profile Summary -->
             <div class="col-md-4">
                 <div class="card text-center" style="border-radius: 15px;">
                     <div class="card-body">
                         <div class="mt-3 mb-4  overflow-hidden">
                            
-                                <img src="{{ asset($profile->avatar) ?? asset('img/avatar/avatar.png') }}" alt="Default Avatar"
+                                <img src="{{ $profile && $profile->avatar ? asset($profile->avatar) : asset('img/avatar/avatar.png') }}" alt="Default Avatar"
                                     class="rounded-circle img" style="width: 100px;">
                           
 
@@ -103,7 +98,8 @@
                     </li>
                 </ul>
                 @php
-                    if (isset($profile->date_of_birth)) {
+                    $dob = null;
+                    if ($profile && $profile->date_of_birth) {
                         $dob = date('Y-m-d', strtotime($profile->date_of_birth));
                     }
                 @endphp
@@ -188,7 +184,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label>ID Card:</label>
-                                <a href="{{ asset($profile->id_card_url) ?? '#' }}"
+                                <a href="{{ $profile && $profile->id_card_url ? asset($profile->id_card_url) : '#' }}"
                                     class="btn btn-sm btn-outline-secondary">View /
                                     Download</a>
                             </div>
@@ -198,7 +194,7 @@
                     <!-- Bio Tab -->
                     <div class="tab-pane fade" id="bio" role="tabpanel">
                         <h5 class="mb-3">Bio & Social Links</h5>
-                        <p><strong>About Me:</strong><br>{{ $profile->bio ?? 'N/A' }}</p>
+                        <p><strong>About Me:</strong><br>{{ $profile && $profile->bio ? $profile->bio : 'N/A' }}</p>
                         <div class="social-links">
                             <a href="" class="me-2"><i class="fab fa-facebook fa-lg"></i></a>
                             <a href="#" class="me-2"><i class="fab fa-twitter fa-lg"></i></a>

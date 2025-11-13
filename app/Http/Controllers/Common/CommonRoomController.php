@@ -43,7 +43,7 @@ class CommonRoomController extends Controller
         $room = Room::where('slug', $slug)
             ->where('is_verified', true)
             ->where('status', 'available')
-            ->with(['images', 'amenities', 'owner'])
+            ->with(['images', 'amenities', 'owner', 'activeVirtualTour'])
             ->whereHas('owner')
             ->firstOrFail();
         $room->sharing_prices = json_decode($room->sharing_prices, true);

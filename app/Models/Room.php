@@ -11,6 +11,11 @@ class Room extends Model
     use HasFactory;
 
     protected $primaryKey = 'room_id';
+    
+    public function getRouteKeyName()
+    {
+        return 'room_id';
+    }
 
     protected $fillable = [
         'owner_id',
@@ -127,5 +132,20 @@ class Room extends Model
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class, 'room_id', 'room_id');
+    }
+
+    public function visits()
+    {
+        return $this->hasMany(Visit::class, 'room_id', 'room_id');
+    }
+
+    public function virtualTour()
+    {
+        return $this->hasOne(VirtualTour::class, 'room_id', 'room_id');
+    }
+
+    public function activeVirtualTour()
+    {
+        return $this->hasOne(VirtualTour::class, 'room_id', 'room_id')->where('is_active', true);
     }
 }

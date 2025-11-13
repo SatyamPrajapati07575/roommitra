@@ -19,11 +19,11 @@
         <!-- Verified Badge -->
         @if($room->is_verified)
             <span class="room-badge verified">
-                <i class='bx bx-check-shield'></i> Verified
+                <i class='fas fa-shield-check'></i> Verified
             </span>
         @else
             <span class="room-badge pending">
-                <i class='bx bx-time'></i> Pending
+                <i class='fas fa-clock'></i> Pending
             </span>
         @endif
         

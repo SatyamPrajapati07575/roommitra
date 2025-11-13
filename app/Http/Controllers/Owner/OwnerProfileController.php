@@ -14,9 +14,10 @@ class OwnerProfileController extends Controller
 {
     public function index()
     {
-        //
-
-        return view('owner.profile');
+        $user = Auth::user();
+        $profile = $user->ownerProfile; // Get the owner profile relationship
+        
+        return view('owner.profile', compact('user', 'profile'));
     }
 
     /**

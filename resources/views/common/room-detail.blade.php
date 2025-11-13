@@ -238,6 +238,28 @@
                                 <span>Book Now</span>
                             </a>
                             
+                            {{-- Visit Buttons Row --}}
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                                {{-- Schedule Visit Button --}}
+                                <a href="{{ route('visits.create', $room) }}" class="room-cta-button" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); font-size: 0.9rem; padding: 0.6rem 1rem;">
+                                    <i class='bx bx-calendar-plus'></i>
+                                    <span>Schedule Visit</span>
+                                </a>
+                                
+                                {{-- Virtual Tour Button --}}
+                                @if($room->activeVirtualTour)
+                                    <a href="{{ route('virtual-tour.show', $room) }}" class="room-cta-button" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); font-size: 0.9rem; padding: 0.6rem 1rem;">
+                                        <i class='bx bx-video'></i>
+                                        <span>Virtual Tour</span>
+                                    </a>
+                                @else
+                                    <button class="room-cta-button" style="background: #9ca3af; cursor: not-allowed; font-size: 0.9rem; padding: 0.6rem 1rem;" disabled>
+                                        <i class='bx bx-video-off'></i>
+                                        <span>No Virtual Tour</span>
+                                    </button>
+                                @endif
+                            </div>
+                            
                             {{-- Contact Owner Button - Secondary --}}
                             <a href="tel:{{ $room->owner->phone ?? '+91-XXXXXXXXXX' }}" class="room-cta-button room-contact-btn">
                                 <i class='bx bx-phone'></i>
@@ -304,6 +326,14 @@
                     onclick="toggleWishlist({{ $room->room_id }})">
                 <i class='bx {{ $isInWishlist ? "bxs-heart" : "bx-heart" }}' id="mobileWishlistIcon"></i>
             </button>
+            <a href="{{ route('visits.create', $room) }}" class="mobile-action-btn" style="background: #10b981;">
+                <i class='bx bx-calendar-plus'></i>
+            </a>
+            @if($room->activeVirtualTour)
+                <a href="{{ route('virtual-tour.show', $room) }}" class="mobile-action-btn" style="background: #3b82f6;">
+                    <i class='bx bx-video'></i>
+                </a>
+            @endif
             <a href="{{ route('user.booking.checkout', $room->slug) }}" class="mobile-bar-button">
                 <i class='bx bx-calendar-check'></i>
                 <span>Book</span>

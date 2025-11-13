@@ -42,6 +42,13 @@
                             <i class='bx bx-git-compare'></i>Compare
                         </a>
                     </li>
+                    @auth
+                    <li class="nav-item">
+                        <a href="{{ route('visits.index') }}" class="nav-link {{ request()->routeIs('visits.*') ? 'active' : '' }}">
+                            <i class='bx bx-calendar-check'></i>My Visits
+                        </a>
+                    </li>
+                    @endauth
                     <li class="nav-item">
                         <a href="{{ route('contact.form') }}" class="nav-link {{ request()->routeIs('contact.form') ? 'active' : '' }}">
                             <i class='bx bx-envelope'></i>Contact
